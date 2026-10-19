@@ -1,0 +1,1665 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>POROGAPIT ADVENTURE — Misi Menaklukkan Pembagian Bersusun</title>
+<style>
+:root{
+  --navy:#0a1744; --navy2:#102465; --navy3:#16308a;
+  --blue:#2563eb; --cyan:#22d3ee; --sky:#38bdf8;
+  --yellow:#facc15; --green:#22c55e; --red:#ef4444; --orange:#f97316;
+  --white:#ffffff; --paper:#f3f7ff; --ink:#0f2a6b; --muted:#5b6b9e;
+  --rad:18px; --shadow:0 8px 24px rgba(5,15,60,.25);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px}
+body{font-family:'Segoe UI',system-ui,-apple-system,Arial,sans-serif;background:
+ radial-gradient(1200px 600px at 85% -10%, #1d3fa3 0%, transparent 60%),
+ radial-gradient(900px 500px at -10% 110%, #123079 0%, transparent 55%),
+ linear-gradient(160deg,#081233 0%, #0a1744 45%, #0d1e57 100%);
+ color:#e7edff;min-height:100vh}
+body.big-text{font-size:1.14rem}
+body.no-anim *,body.no-anim *::before,body.no-anim *::after{animation:none!important;transition:none!important}
+button{font-family:inherit;cursor:pointer}
+input,select{font-family:inherit}
+h1,h2,h3{line-height:1.25}
+.stars-bg{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.6}
+.stars-bg span{position:absolute;width:3px;height:3px;background:#cfe3ff;border-radius:50%;animation:twinkle 3s infinite ease-in-out}
+@keyframes twinkle{0%,100%{opacity:.2}50%{opacity:1}}
+body.no-fx .stars-bg{display:none}
+
+#app{display:flex;min-height:100vh;position:relative;z-index:1}
+/* ===== Sidebar ===== */
+#sidebar{width:252px;flex-shrink:0;background:linear-gradient(180deg,#0b1a4e,#0d2160);border-right:1px solid rgba(90,140,255,.25);
+ display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;z-index:40}
+.side-logo{padding:18px 16px 10px;text-align:center}
+.side-logo .lg1{font-size:1.28rem;font-weight:900;letter-spacing:.5px;background:linear-gradient(90deg,#facc15,#fde68a,#22d3ee);-webkit-background-clip:text;background-clip:text;color:transparent}
+.side-logo .lg2{font-size:.68rem;color:#9db4ee;margin-top:2px}
+#navlist{list-style:none;padding:10px;flex:1}
+#navlist li{margin-bottom:4px}
+.nav-btn{display:flex;align-items:center;gap:10px;width:100%;padding:11px 12px;border:none;border-radius:12px;background:transparent;color:#c9d7ff;font-size:.92rem;font-weight:600;text-align:left;transition:background .15s}
+.nav-btn:hover{background:rgba(70,120,255,.18)}
+.nav-btn.active{background:linear-gradient(90deg,#2563eb,#1d4ed8);color:#fff;box-shadow:0 4px 14px rgba(37,99,235,.4)}
+.nav-btn .ico{font-size:1.1rem;width:24px;text-align:center}
+.side-credit{padding:12px;font-size:.7rem;color:#8da4e8;text-align:center;border-top:1px solid rgba(90,140,255,.2)}
+/* ===== Main ===== */
+#main{flex:1;display:flex;flex-direction:column;min-width:0}
+#topbar{display:flex;align-items:center;gap:12px;padding:12px 20px;position:sticky;top:0;z-index:30;
+ background:rgba(10,23,68,.85);backdrop-filter:blur(8px);border-bottom:1px solid rgba(90,140,255,.2)}
+#burger{display:none;background:rgba(70,120,255,.2);border:1px solid rgba(120,160,255,.4);color:#fff;font-size:1.3rem;border-radius:10px;width:42px;height:42px}
+#pagetitle{font-size:1.1rem;font-weight:800;flex:1;display:flex;align-items:center;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:rgba(70,120,255,.18);border:1px solid rgba(120,160,255,.35);
+ border-radius:999px;padding:6px 12px;font-size:.85rem;font-weight:700;white-space:nowrap}
+.chip.gold{background:rgba(250,204,21,.15);border-color:rgba(250,204,21,.5);color:#fde68a}
+#page{flex:1;padding:20px;max-width:1150px;width:100%;margin:0 auto}
+#credit-footer{text-align:center;padding:14px;font-size:.8rem;color:#9db4ee;border-top:1px solid rgba(90,140,255,.15)}
+#credit-footer b{color:#cfe0ff}
+/* ===== Cards & buttons ===== */
+.card{background:var(--white);color:var(--ink);border-radius:var(--rad);box-shadow:var(--shadow);padding:20px;margin-bottom:18px}
+.card.navy{background:linear-gradient(135deg,#13296f,#102158);color:#e7edff;border:1px solid rgba(110,160,255,.3)}
+.card h2{font-size:1.25rem;margin-bottom:10px}
+.card h3{font-size:1.05rem;margin-bottom:8px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:12px;
+ padding:12px 20px;font-size:.95rem;font-weight:800;transition:transform .12s,box-shadow .12s;min-height:44px}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:linear-gradient(90deg,#2563eb,#3b82f6);color:#fff;box-shadow:0 5px 16px rgba(37,99,235,.45)}
+.btn.cyan{background:linear-gradient(90deg,#0891b2,#22d3ee);color:#06283d}
+.btn.yellow{background:linear-gradient(90deg,#f59e0b,#facc15);color:#4a3203;box-shadow:0 5px 16px rgba(250,204,21,.35)}
+.btn.green{background:linear-gradient(90deg,#16a34a,#22c55e);color:#fff}
+.btn.danger{background:linear-gradient(90deg,#dc2626,#ef4444);color:#fff}
+.btn.ghost{background:rgba(37,99,235,.1);color:#1d4ed8;border:2px solid #bfd3ff}
+.btn.ghost.on-dark{background:rgba(120,170,255,.12);color:#cfe0ff;border-color:rgba(120,170,255,.4)}
+.btn.small{padding:8px 14px;font-size:.84rem;min-height:38px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.input{width:100%;padding:12px 14px;border:2px solid #c7d6f5;border-radius:12px;font-size:1rem;color:var(--ink);background:#fff}
+.input:focus{outline:3px solid rgba(34,211,238,.4);border-color:var(--cyan)}
+.input.num{font-size:1.4rem;font-weight:800;text-align:center;letter-spacing:2px}
+label.lbl{display:block;font-size:.85rem;font-weight:700;color:var(--muted);margin-bottom:5px}
+.pbar{background:#dbe6ff;border-radius:999px;height:14px;overflow:hidden}
+.pbar.dark{background:rgba(120,170,255,.2)}
+.pbar>div{height:100%;background:linear-gradient(90deg,#22c55e,#4ade80);border-radius:999px;transition:width .4s}
+.pbar>div.blue{background:linear-gradient(90deg,#2563eb,#38bdf8)}
+.pbar>div.gold{background:linear-gradient(90deg,#f59e0b,#fde047)}
+/* ===== Feedback ===== */
+.fb{border-radius:14px;padding:14px 16px;margin-top:12px;font-weight:600;display:flex;gap:10px;align-items:flex-start}
+.fb .fi{font-size:1.4rem}
+.fb.ok{background:#dcfce7;color:#14532d;border:2px solid #86efac}
+.fb.no{background:#fee2e2;color:#7f1d1d;border:2px solid #fca5a5}
+.fb.info{background:#e0f2fe;color:#0c4a6e;border:2px solid #7dd3fc}
+.fb.warn{background:#fef3c7;color:#78350f;border:2px solid #fcd34d}
+/* ===== Porogapit ===== */
+.pg-scroll{overflow-x:auto;padding:8px 2px}
+.pg{display:inline-block;font-family:'Consolas','Courier New',monospace;font-weight:800;color:var(--ink)}
+.pg-row{display:flex;align-items:stretch}
+.pg-gut{min-width:3.3rem;display:flex;align-items:center;justify-content:flex-end;padding-right:.5rem;font-size:1.5rem}
+.pg-cell{width:2.35rem;height:2.5rem;display:flex;align-items:center;justify-content:center;font-size:1.55rem;border-radius:8px;position:relative}
+body.big-text .pg-cell{width:2.7rem;height:2.9rem;font-size:1.85rem}
+.pg-q .pg-cell{color:#1d4ed8}
+.pg-d .pg-cells{border-top:3px solid var(--ink);border-left:3px solid var(--ink);border-top-left-radius:4px}
+.pg-divisor{font-size:1.55rem;font-weight:800}
+.pg-minus{color:#b91c1c;font-size:1.3rem}
+.pg-cell.ul{border-bottom:3px solid var(--ink);border-radius:0}
+.pg-cell.hl{background:#fef08a;box-shadow:inset 0 0 0 2px #f59e0b;color:#92400e}
+.pg-cell.drop{color:#0369a1}
+.pg-cell.drop::before{content:'↓';position:absolute;top:-14px;font-size:.75rem;color:#0ea5e9}
+/* ===== Tabs ===== */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.tab{padding:10px 18px;border-radius:999px;border:2px solid #bfd3ff;background:#fff;color:#1d4ed8;font-weight:800;font-size:.88rem}
+.tab.active{background:linear-gradient(90deg,#2563eb,#3b82f6);color:#fff;border-color:#2563eb}
+/* ===== Toggle switch ===== */
+.switch{position:relative;width:52px;height:28px;flex-shrink:0}
+.switch input{opacity:0;width:0;height:0}
+.slider{position:absolute;inset:0;background:#c4cfe8;border-radius:999px;transition:.2s;cursor:pointer}
+.slider::before{content:'';position:absolute;width:22px;height:22px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 2px 5px rgba(0,0,0,.25)}
+.switch input:checked+.slider{background:var(--green)}
+.switch input:checked+.slider::before{transform:translateX(24px)}
+.setrow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #e4ebfa}
+.setrow:last-child{border-bottom:none}
+/* ===== Modal / toast ===== */
+#modal-root{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;background:rgba(4,10,35,.7);padding:16px}
+#modal-root.show{display:flex}
+.modal-box{background:#fff;color:var(--ink);border-radius:20px;max-width:520px;width:100%;max-height:88vh;overflow-y:auto;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+#toast-root{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:120;display:flex;flex-direction:column;gap:8px;align-items:center;width:min(92vw,460px)}
+.toast{background:#102465;color:#fff;border:1px solid rgba(120,170,255,.5);border-radius:12px;padding:12px 18px;font-size:.9rem;font-weight:600;box-shadow:var(--shadow);animation:tpop .25s;width:100%;text-align:center}
+.toast.ok{background:#14532d;border-color:#4ade80}
+.toast.err{background:#7f1d1d;border-color:#f87171}
+@keyframes tpop{from{opacity:0;transform:translateY(12px)}to{opacity:1}}
+/* ===== Confetti / pop ===== */
+.confetti{position:fixed;top:-12px;z-index:130;width:10px;height:14px;border-radius:3px;animation:cfall linear forwards;pointer-events:none}
+@keyframes cfall{to{transform:translateY(105vh) rotate(720deg);opacity:.8}}
+.bounce{animation:bnc .5s}
+@keyframes bnc{0%{transform:scale(.8)}60%{transform:scale(1.08)}100%{transform:scale(1)}}
+/* ===== Misc ===== */
+.menu-tile{border:none;border-radius:16px;padding:18px 12px;color:#fff;font-weight:800;font-size:.95rem;display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:var(--shadow);transition:transform .15s}
+.menu-tile:hover{transform:translateY(-3px)}
+.menu-tile .big{font-size:1.9rem}
+.menu-tile small{font-weight:600;opacity:.9;font-size:.74rem}
+.badgeitem{display:flex;gap:12px;align-items:center;border:2px solid #dbe6ff;border-radius:14px;padding:12px}
+.badgeitem.got{background:#fefce8;border-color:#fde047}
+.badgeitem .bic{font-size:1.9rem;filter:grayscale(1);opacity:.45}
+.badgeitem.got .bic{filter:none;opacity:1}
+.tbl{width:100%;border-collapse:collapse;font-size:.86rem}
+.tbl th{background:#e8efff;color:#1e3a8a;text-align:left;padding:9px 10px;position:sticky;top:0}
+.tbl td{padding:9px 10px;border-bottom:1px solid #e6edfb}
+.tbl tr:hover td{background:#f4f8ff}
+.tbl-wrap{overflow-x:auto;max-height:420px;overflow-y:auto;border-radius:12px;border:1px solid #dbe6ff}
+.stat-card{background:linear-gradient(135deg,#eff6ff,#e0f2fe);border:2px solid #bfdbfe;border-radius:16px;padding:14px;text-align:center}
+.stat-card .sv{font-size:1.6rem;font-weight:900;color:#1d4ed8}
+.stat-card .sl{font-size:.78rem;color:#475a8f;font-weight:700}
+.step-chip{display:inline-flex;align-items:center;gap:6px;background:#eef4ff;border:2px solid #bfd3ff;border-radius:999px;padding:6px 14px;font-weight:800;color:#1d4ed8;font-size:.85rem}
+.step-chip.on{background:#2563eb;color:#fff;border-color:#2563eb}
+.mission-row{display:flex;gap:12px;align-items:center;border:2px solid #dbe6ff;border-radius:14px;padding:12px;margin-bottom:10px;flex-wrap:wrap}
+.mission-row .mi{font-size:1.6rem}
+.kbd-opt{display:block;width:100%;text-align:left;border:2px solid #c7d6f5;background:#fff;color:var(--ink);border-radius:12px;padding:13px 16px;font-size:1rem;font-weight:700;margin-bottom:9px;transition:.12s}
+.kbd-opt:hover{border-color:#2563eb;background:#eff6ff}
+.kbd-opt.sel{border-color:#2563eb;background:#dbeafe}
+.kbd-opt.correct{border-color:#22c55e;background:#dcfce7}
+.kbd-opt.wrong{border-color:#ef4444;background:#fee2e2}
+.materi-card{border:2px solid #dbe6ff;border-radius:16px;padding:16px;background:#fff;color:var(--ink);text-align:left;width:100%;display:flex;gap:12px;align-items:flex-start;transition:.15s}
+.materi-card:hover{border-color:#38bdf8;transform:translateY(-2px);box-shadow:var(--shadow)}
+.materi-card .mnum{background:linear-gradient(135deg,#2563eb,#22d3ee);color:#fff;font-weight:900;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.materi-card.read{border-color:#86efac;background:#f0fdf4}
+.fruit{font-size:1.5rem;letter-spacing:2px}
+.poro-say{position:relative;background:#e0f2fe;border:2px solid #7dd3fc;border-radius:16px;padding:12px 14px;color:#0c4a6e;font-weight:700;font-size:.92rem}
+.hero{background:linear-gradient(135deg,#13296f 0%,#1a3a9e 60%,#1d4ed8 100%);border:1px solid rgba(110,160,255,.4);border-radius:22px;padding:26px;display:flex;gap:20px;align-items:center;flex-wrap:wrap;box-shadow:var(--shadow);margin-bottom:18px}
+.hero h1{font-size:1.9rem;font-weight:900;background:linear-gradient(90deg,#facc15,#fde68a,#67e8f9);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .sub{color:#bcd0ff;font-weight:700;margin:4px 0 8px}
+.hero .tag{color:#86efac;font-size:.92rem;font-weight:700}
+#sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(3,8,30,.6);z-index:35}
+@media (max-width:900px){
+  #sidebar{position:fixed;left:0;top:0;transform:translateX(-105%);transition:transform .25s;width:260px}
+  #sidebar.open{transform:translateX(0)}
+  #sidebar-overlay.show{display:block}
+  #burger{display:block}
+  #page{padding:14px}
+  .hero{padding:20px}
+  .hero h1{font-size:1.45rem}
+}
+@media print{
+  body *{visibility:hidden}
+  #print-area,#print-area *{visibility:visible}
+  #print-area{position:absolute;left:0;top:0;width:100%;background:#fff;color:#000;padding:20px}
+}
+</style>
+</head>
+<body>
+<div class="stars-bg" id="starsbg"></div>
+<div id="app">
+  <aside id="sidebar">
+    <div class="side-logo">
+      <div style="font-size:2rem">🤖</div>
+      <div class="lg1">POROGAPIT ADVENTURE</div>
+      <div class="lg2">Misi Menaklukkan Pembagian Bersusun</div>
+    </div>
+    <ul id="navlist"></ul>
+    <div class="side-credit">Created by <b>Wiyanto Abu Hanif</b></div>
+  </aside>
+  <div id="sidebar-overlay" onclick="toggleSidebar(false)"></div>
+  <div id="main">
+    <header id="topbar">
+      <button id="burger" onclick="toggleSidebar()" aria-label="Buka menu">☰</button>
+      <div id="pagetitle">Beranda</div>
+      <span class="chip gold" id="chip-stars">⭐ 0</span>
+      <span class="chip" id="chip-level">🤖 Level 1</span>
+    </header>
+    <main id="page"></main>
+    <footer id="credit-footer">POROGAPIT ADVENTURE · Created by <b>Wiyanto Abu Hanif</b></footer>
+  </div>
+</div>
+<div id="modal-root"></div>
+<div id="toast-root"></div>
+<div id="print-area" style="display:none"></div>
+
+<script>
+"use strict";
+/* ================================================================
+   POROGAPIT ADVENTURE — Created by Wiyanto Abu Hanif
+   Satu file HTML mandiri. Jalankan: simpan sebagai index.html,
+   lalu buka dengan browser modern (klik dua kali file-nya).
+   ================================================================ */
+
+/* ---------- Penyimpanan aman (localStorage + fallback memori) ---------- */
+const LS_KEY='porogapit_adventure_v1';
+let memStore=null, storageWarned=false;
+function storageOk(){try{localStorage.setItem('__t','1');localStorage.removeItem('__t');return true}catch(e){return false}}
+function defaultState(){
+  return {
+    version:1,
+    settings:{sound:true,anim:true,fx:true,bigText:false,confirmDelete:true},
+    progress:{points:0,stars:0,materialsRead:[],levelsDone:[],simDone:0,answered:0,correctTotal:0,
+      correctNoRem:0,correctZero:0,correctRem:0,bestQuiz:0,missionsClaimed:0},
+    history:[], badges:[], wrongLog:{},
+    missions:{date:'',list:[]}
+  };
+}
+function loadState(){
+  let raw=null;
+  try{raw=localStorage.getItem(LS_KEY);}catch(e){raw=memStore;}
+  if(!raw) return defaultState();
+  try{
+    const d=JSON.parse(raw);
+    if(!d||typeof d!=='object'||!d.version) return defaultState();
+    const base=defaultState();
+    return {
+      version:1,
+      settings:Object.assign(base.settings,d.settings||{}),
+      progress:Object.assign(base.progress,d.progress||{}),
+      history:Array.isArray(d.history)?d.history:[],
+      badges:Array.isArray(d.badges)?d.badges:[],
+      wrongLog:(d.wrongLog&&typeof d.wrongLog==='object')?d.wrongLog:{},
+      missions:(d.missions&&d.missions.list)?d.missions:base.missions
+    };
+  }catch(e){return defaultState();}
+}
+let S=loadState();
+function save(){
+  const raw=JSON.stringify(S);
+  try{localStorage.setItem(LS_KEY,raw);}
+  catch(e){
+    memStore=raw;
+    if(!storageWarned){storageWarned=true;toast('Perhatian: progres tidak dapat disimpan permanen di browser ini.','err');}
+  }
+  updateChips();
+}
+
+/* ---------- Util ---------- */
+function fmt(n){return Number(n).toLocaleString('id-ID');}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function shuffle(arr){const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function todayStr(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function dateID(iso){const d=new Date(iso);return d.toLocaleDateString('id-ID',{day:'numeric',month:'short',year:'numeric'})+' '+d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});}
+function $(id){return document.getElementById(id);}
+
+/* ---------- Suara (opsional, WebAudio) ---------- */
+let AC=null;
+function tone(freq,dur,type,when,vol){
+  if(!S.settings.sound) return;
+  try{
+    if(!AC) AC=new (window.AudioContext||window.webkitAudioContext)();
+    const o=AC.createOscillator(),g=AC.createGain();
+    o.type=type||'sine';o.frequency.value=freq;
+    g.gain.setValueAtTime(vol||0.12,AC.currentTime+(when||0));
+    g.gain.exponentialRampToValueAtTime(0.001,AC.currentTime+(when||0)+dur);
+    o.connect(g);g.connect(AC.destination);
+    o.start(AC.currentTime+(when||0));o.stop(AC.currentTime+(when||0)+dur+.02);
+  }catch(e){}
+}
+const sfx={
+  click(){tone(600,.07,'square',0,.05);},
+  correct(){tone(660,.12,'sine');tone(880,.18,'sine',.12);},
+  wrong(){tone(220,.25,'sawtooth',0,.08);},
+  win(){tone(523,.14,'sine');tone(659,.14,'sine',.14);tone(784,.14,'sine',.28);tone(1047,.3,'sine',.42);},
+  star(){tone(1200,.1,'triangle');tone(1600,.15,'triangle',.1);}
+};
+
+/* ---------- Toast / Modal / Confetti ---------- */
+function toast(msg,kind){
+  const t=document.createElement('div');
+  t.className='toast '+(kind||'');t.innerHTML=msg;
+  $('toast-root').appendChild(t);
+  setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .4s';setTimeout(()=>t.remove(),400);},2800);
+}
+function openModal(html){
+  const r=$('modal-root');
+  r.innerHTML='<div class="modal-box">'+html+'</div>';
+  r.classList.add('show');
+  r.onclick=(e)=>{if(e.target===r) closeModal();};
+}
+function closeModal(){$('modal-root').classList.remove('show');$('modal-root').innerHTML='';}
+function confirmDialog(title,msg,yesLabel,onYes){
+  openModal('<h3 style="margin-bottom:8px">'+esc(title)+'</h3><p style="color:#475a8f;margin-bottom:16px">'+msg+'</p>'+
+   '<div class="btn-row"><button class="btn danger" id="cf-yes">'+esc(yesLabel)+'</button>'+
+   '<button class="btn ghost" onclick="closeModal()">Batal</button></div>');
+  $('cf-yes').onclick=()=>{closeModal();onYes();};
+}
+function confetti(){
+  if(!S.settings.fx) return;
+  const colors=['#facc15','#22d3ee','#22c55e','#f97316','#3b82f6','#ec4899'];
+  for(let i=0;i<36;i++){
+    const c=document.createElement('div');c.className='confetti';
+    c.style.left=(Math.random()*100)+'vw';
+    c.style.background=colors[i%colors.length];
+    c.style.animationDuration=(1.6+Math.random()*1.6)+'s';
+    c.style.animationDelay=(Math.random()*.4)+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),3600);
+  }
+}
+
+/* ---------- Maskot Poro ---------- */
+function poroSVG(size){
+  size=size||110;
+  return '<svg width="'+size+'" height="'+(size*1.15)+'" viewBox="0 0 120 138" aria-label="Robot Poro">'+
+  '<line x1="60" y1="16" x2="60" y2="4" stroke="#67e8f9" stroke-width="4"/><circle cx="60" cy="5" r="5" fill="#facc15"/>'+
+  '<rect x="18" y="16" width="84" height="62" rx="20" fill="#f1f6ff" stroke="#93b4f5" stroke-width="3"/>'+
+  '<rect x="28" y="28" width="64" height="38" rx="12" fill="#0a1744"/>'+
+  '<circle cx="47" cy="45" r="7" fill="#22d3ee"><animate attributeName="r" values="7;7;1.5;7" keyTimes="0;.9;.95;1" dur="3.5s" repeatCount="indefinite"/></circle>'+
+  '<circle cx="73" cy="45" r="7" fill="#22d3ee"><animate attributeName="r" values="7;7;1.5;7" keyTimes="0;.9;.95;1" dur="3.5s" repeatCount="indefinite"/></circle>'+
+  '<path d="M50 57 Q60 64 70 57" stroke="#22d3ee" stroke-width="3" fill="none" stroke-linecap="round"/>'+
+  '<rect x="30" y="84" width="60" height="44" rx="14" fill="#2563eb" stroke="#1e40af" stroke-width="3"/>'+
+  '<circle cx="60" cy="104" r="12" fill="#facc15"/><text x="60" y="110" text-anchor="middle" font-size="16" font-weight="900" fill="#1e3a8a">P</text>'+
+  '<rect x="14" y="88" width="12" height="26" rx="6" fill="#60a5fa"/><rect x="94" y="88" width="12" height="26" rx="6" fill="#60a5fa"/></svg>';
+}
+
+/* ================================================================
+   MESIN MATEMATIKA POROGAPIT (pembagian bersusun yang sebenarnya)
+   ================================================================ */
+function validDivision(a,b){
+  if(!Number.isInteger(a)||!Number.isInteger(b)) return 'Masukkan bilangan bulat.';
+  if(a<=0) return 'Bilangan yang dibagi harus bilangan bulat positif.';
+  if(b<=0) return 'Pembagi harus bilangan bulat positif (tidak boleh nol).';
+  if(a<b) return 'Untuk latihan ini, bilangan yang dibagi harus lebih besar atau sama dengan pembagi.';
+  if(a>999999) return 'Bilangan terlalu besar. Gunakan maksimal 6 digit.';
+  if(b>99) return 'Pembagi maksimal dua digit.';
+  return null;
+}
+function computeDivision(dividend,divisor){
+  const err=validDivision(dividend,divisor);
+  if(err) return {error:err};
+  const ds=String(dividend).split('').map(Number);
+  let pos=0,chunk=ds[0];
+  while(chunk<divisor&&pos<ds.length-1){pos++;chunk=chunk*10+ds[pos];}
+  const steps=[];const qd=[];
+  steps.push({type:'mulai',pos:pos,chunk:chunk,
+    text:'Kita mulai dari bagian paling kiri: angka '+fmt(chunk)+'. Bagian ini yang pertama kita bagi dengan '+divisor+'.'});
+  let guard=0;
+  while(guard++<40){
+    const q=Math.floor(chunk/divisor);
+    steps.push({type:'bagi',q:q,chunk:chunk,col:pos,
+      text:'BAGI: '+divisor+' masuk ke '+fmt(chunk)+' sebanyak '+q+' kali'+(q===0?' (karena '+fmt(chunk)+' lebih kecil dari '+divisor+', tulis 0 — jangan dilewati!)':'')+'. Tulis '+q+' pada hasil bagi.'});
+    qd.push({d:q,col:pos});
+    const prod=q*divisor;
+    steps.push({type:'kali',prod:prod,q:q,chunk:chunk,col:pos,
+      text:'KALI: '+q+' × '+divisor+' = '+fmt(prod)+'. Tulis '+fmt(prod)+' di bawah '+fmt(chunk)+'.'});
+    const diff=chunk-prod;
+    steps.push({type:'kurang',diff:diff,chunk:chunk,prod:prod,col:pos,
+      text:'KURANG: '+fmt(chunk)+' − '+fmt(prod)+' = '+fmt(diff)+'.'});
+    if(pos>=ds.length-1){
+      steps.push({type:'selesai',rem:diff,
+        text: diff===0
+          ? 'Semua angka sudah diproses dan tidak ada sisa. Jadi '+fmt(dividend)+' ÷ '+divisor+' = '+fmt(Math.floor(dividend/divisor))+'. Hebat!'
+          : 'Semua angka sudah diproses. Sisanya '+fmt(diff)+' (lebih kecil dari pembagi '+divisor+'). Jadi '+fmt(dividend)+' ÷ '+divisor+' = '+fmt(Math.floor(dividend/divisor))+' sisa '+fmt(diff)+'.'});
+      break;
+    }
+    pos++;
+    const nd=ds[pos];
+    chunk=diff*10+nd;
+    steps.push({type:'turun',digit:nd,col:pos,diff:diff,newChunk:chunk,
+      text:'TURUNKAN: turunkan angka '+nd+'. Sekarang bilangan yang dihitung menjadi '+fmt(chunk)+'. Ulangi langkah BAGI.'});
+  }
+  const q=Math.floor(dividend/divisor), r=dividend%divisor;
+  // Verifikasi matematis
+  if(q*divisor+r!==dividend||r>=divisor) return {error:'Kesalahan perhitungan internal.'};
+  return {dividend:dividend,divisor:divisor,digits:ds,steps:steps,q:q,r:r,
+    quotientStr:qd.map(x=>x.d).join('')};
+}
+/* Render porogapit sampai langkah ke-upto (indeks pada steps) */
+function poroHTML(model,upto){
+  const n=model.digits.length;
+  const qrow=new Array(n).fill(null);
+  const rows=[];let divHl=-1;
+  const end=Math.min(upto,model.steps.length-1);
+  for(let i=0;i<=end;i++){
+    const s=model.steps[i],last=(i===end);
+    if(s.type==='mulai'){if(last)divHl=s.pos;}
+    else if(s.type==='bagi'){qrow[s.col]={ch:String(s.q),hl:last};}
+    else if(s.type==='kali'){
+      const row={minus:true,line:true,cells:new Array(n).fill(null)};
+      const dg=String(s.prod).split('');
+      dg.forEach((d,k)=>{const c=s.col-dg.length+1+k;if(c>=0)row.cells[c]={ch:d,hl:last};});
+      rows.push(row);
+    }else if(s.type==='kurang'){
+      const row={cells:new Array(n).fill(null)};
+      const dg=String(s.diff).split('');
+      dg.forEach((d,k)=>{const c=s.col-dg.length+1+k;if(c>=0)row.cells[c]={ch:d,hl:last};});
+      rows.push(row);
+    }else if(s.type==='turun'){
+      const row=rows[rows.length-1];
+      if(row)row.cells[s.col]={ch:String(s.digit),hl:last,drop:true};
+    }
+  }
+  let h='<div class="pg">';
+  h+='<div class="pg-row pg-q"><div class="pg-gut"></div><div class="pg-cells" style="display:flex">';
+  for(let c=0;c<n;c++){const q=qrow[c];h+='<div class="pg-cell'+(q&&q.hl?' hl':'')+'">'+(q?q.ch:'')+'</div>';}
+  h+='</div></div>';
+  h+='<div class="pg-row pg-d"><div class="pg-gut pg-divisor">'+model.divisor+'</div><div class="pg-cells" style="display:flex">';
+  for(let c=0;c<n;c++){h+='<div class="pg-cell'+(divHl>=0&&c<=divHl?' hl':'')+'">'+model.digits[c]+'</div>';}
+  h+='</div></div>';
+  rows.forEach(r=>{
+    h+='<div class="pg-row"><div class="pg-gut pg-minus">'+(r.minus?'−':'')+'</div><div class="pg-cells" style="display:flex">';
+    for(let c=0;c<n;c++){
+      const cc=r.cells[c];let cls='pg-cell';
+      if(cc&&cc.hl)cls+=' hl';if(cc&&cc.drop)cls+=' drop';if(r.line&&cc)cls+=' ul';
+      h+='<div class="'+cls+'">'+(cc?cc.ch:'')+'</div>';
+    }
+    h+='</div></div>';
+  });
+  h+='</div>';
+  return '<div class="pg-scroll">'+h+'</div>';
+}
+
+/* ---------- Gamifikasi ---------- */
+const LEVEL_NAMES=[[0,'Pemula Angka'],[100,'Penjelajah Angka'],[250,'Petualang Hebat'],[500,'Ahli Pembagian'],[900,'Master Porogapit']];
+function levelInfo(){
+  let lv=1,name=LEVEL_NAMES[0][1],next=LEVEL_NAMES[1]?LEVEL_NAMES[1][0]:null;
+  for(let i=0;i<LEVEL_NAMES.length;i++){
+    if(S.progress.points>=LEVEL_NAMES[i][0]){lv=i+1;name=LEVEL_NAMES[i][1];next=LEVEL_NAMES[i+1]?LEVEL_NAMES[i+1][0]:null;}
+  }
+  return {lv:lv,name:name,next:next};
+}
+function addPoints(p){S.progress.points+=p;}
+function addStars(n){S.progress.stars+=n;if(n>0)sfx.star();}
+function recordHistory(e){
+  e.date=new Date().toISOString();e.id=Date.now()+'_'+Math.floor(Math.random()*999);
+  S.history.unshift(e);
+  if(S.history.length>300)S.history.length=300;
+  save();
+}
+function logWrong(a,b){const k=fmt(a)+' ÷ '+b;S.wrongLog[k]=(S.wrongLog[k]||0)+1;}
+const BADGES=[
+ {id:'b1',ico:'👣',name:'Langkah Pertama',desc:'Menyelesaikan simulasi porogapit pertama',cond:()=>S.progress.simDone>=1},
+ {id:'b2',ico:'⚔️',name:'Pejuang Angka',desc:'Menyelesaikan 10 soal latihan',cond:()=>S.progress.answered>=10},
+ {id:'b3',ico:'✨',name:'Ahli Tanpa Sisa',desc:'Menjawab benar soal pembagian tanpa sisa',cond:()=>S.progress.correctNoRem>=1},
+ {id:'b4',ico:'0️⃣',name:'Penakluk Nol',desc:'Menjawab benar soal dengan angka nol pada hasil bagi',cond:()=>S.progress.correctZero>=1},
+ {id:'b5',ico:'👑',name:'Raja Sisa',desc:'Menjawab benar soal pembagian dengan sisa',cond:()=>S.progress.correctRem>=1},
+ {id:'b6',ico:'🏆',name:'Master Porogapit',desc:'Mendapat nilai minimal 90 pada kuis',cond:()=>S.progress.bestQuiz>=90},
+ {id:'b7',ico:'🔥',name:'Konsisten Belajar',desc:'Mengklaim 5 hadiah misi harian',cond:()=>S.progress.missionsClaimed>=5}
+];
+function checkBadges(){
+  BADGES.forEach(b=>{
+    if(!S.badges.includes(b.id)&&b.cond()){
+      S.badges.push(b.id);save();
+      toast('🏅 Lencana baru: <b>'+b.name+'</b>!','ok');sfx.win();confetti();
+    }
+  });
+}
+
+/* ---------- Misi Harian ---------- */
+const MISSION_DEFS=[
+ {id:'m1',ico:'✅',name:'Selesaikan 5 soal pembagian',target:5,reward:2},
+ {id:'m2',ico:'🎯',name:'Jawab 3 soal dengan benar',target:3,reward:3},
+ {id:'m3',ico:'📘',name:'Pelajari 1 materi',target:1,reward:2},
+ {id:'m4',ico:'🖥️',name:'Selesaikan 1 simulasi porogapit',target:1,reward:3},
+ {id:'m5',ico:'🔍',name:'Periksa 1 jawaban dengan perkalian',target:1,reward:2}
+];
+function ensureMissions(){
+  const t=todayStr();
+  if(S.missions.date!==t){
+    S.missions={date:t,list:MISSION_DEFS.map(m=>({id:m.id,progress:0,claimed:false}))};
+    save();
+  }
+}
+function missionEvent(id,inc){
+  ensureMissions();
+  const def=MISSION_DEFS.find(d=>d.id===id);
+  const m=S.missions.list.find(x=>x.id===id);
+  if(!m||!def||m.claimed)return;
+  const before=m.progress;
+  m.progress=Math.min(def.target,m.progress+(inc||1));
+  save();
+  if(before<def.target&&m.progress>=def.target){
+    toast('🗓️ Misi selesai: <b>'+def.name+'</b>! Klaim hadiahmu di Misi Harian.','ok');
+  }
+}
+/* dipanggil setiap siswa menjawab satu soal (latihan/kuis/simulasi mandiri) */
+function onAnswered(correct,a,b,qHasZero,hasRem){
+  S.progress.answered++;
+  missionEvent('m1');
+  if(correct){
+    S.progress.correctTotal++;
+    missionEvent('m2');
+    if(hasRem)S.progress.correctRem++;else S.progress.correctNoRem++;
+    if(qHasZero)S.progress.correctZero++;
+    addPoints(10);
+  }else{
+    if(a!==undefined)logWrong(a,b);
+  }
+  save();checkBadges();
+}
+/* ================================================================
+   HALAMAN: BERANDA
+   ================================================================ */
+function learnProgressPct(){
+  const m=S.progress.materialsRead.length/9;
+  const l=S.progress.levelsDone.length/6;
+  const k=Math.min(S.progress.bestQuiz,100)/100;
+  return Math.round((m+l+k)/3*100);
+}
+function rHome(){
+  ensureMissions();
+  const li=levelInfo();
+  const pct=learnProgressPct();
+  const pending=S.missions.list.filter(m=>{const d=MISSION_DEFS.find(x=>x.id===m.id);return m.progress<d.target||!m.claimed;}).length;
+  return ''+
+  '<div class="hero">'+
+    '<div style="flex-shrink:0">'+poroSVG(120)+'</div>'+
+    '<div style="flex:1;min-width:240px">'+
+      '<h1>POROGAPIT ADVENTURE</h1>'+
+      '<div class="sub">Misi Menaklukkan Pembagian Bersusun</div>'+
+      '<div class="tag">“Pahami Langkahnya, Kuasai Hitungannya, Raih Bintangnya!”</div>'+
+      '<p style="color:#cdd9ff;font-size:.9rem;margin-top:10px">Halo, Petualang! Aku <b>Poro</b> 🤖. Pembagian bersusun (porogapit) adalah cara membagi bilangan langkah demi langkah: <b>BAGI → KALI → KURANG → TURUNKAN</b>. Ayo kita taklukkan bersama!</p>'+
+      '<div class="btn-row">'+
+        '<button class="btn yellow" onclick="showPage(\'materi\')">▶ Mulai Belajar</button>'+
+        '<button class="btn cyan" onclick="showPage(\'simulasi\')">🖥️ Coba Simulasi</button>'+
+        '<button class="btn green" onclick="showPage(\'latihan\')">🎯 Mulai Latihan</button>'+
+        '<button class="btn primary" onclick="showPage(\'kuis\')">🏆 Kuis Tantangan</button>'+
+      '</div>'+
+    '</div>'+
+  '</div>'+
+  '<div class="card">'+
+    '<h2>📊 Progres Belajarmu</h2>'+
+    '<div class="pbar" style="height:18px"><div style="width:'+pct+'%"></div></div>'+
+    '<p style="margin-top:6px;font-weight:700;color:#475a8f">'+pct+'% perjalanan belajar selesai</p>'+
+    '<div class="grid g4" style="margin-top:14px">'+
+      '<div class="stat-card"><div class="sv">⭐ '+fmt(S.progress.stars)+'</div><div class="sl">Bintang Terkumpul</div></div>'+
+      '<div class="stat-card"><div class="sv">'+fmt(S.progress.points)+'</div><div class="sl">Total Poin</div></div>'+
+      '<div class="stat-card"><div class="sv">Lv '+li.lv+'</div><div class="sl">'+li.name+'</div></div>'+
+      '<div class="stat-card"><div class="sv">'+pending+'</div><div class="sl">Misi Belum Tuntas Hari Ini</div></div>'+
+    '</div>'+
+  '</div>'+
+  '<div class="grid g4" style="margin-bottom:18px">'+
+    '<button class="menu-tile" style="background:linear-gradient(135deg,#2563eb,#1d4ed8)" onclick="showPage(\'materi\')"><span class="big">📘</span>Materi<small>9 topik bertahap</small></button>'+
+    '<button class="menu-tile" style="background:linear-gradient(135deg,#0891b2,#164e63)" onclick="showPage(\'simulasi\')"><span class="big">🖥️</span>Simulasi<small>3 mode interaktif</small></button>'+
+    '<button class="menu-tile" style="background:linear-gradient(135deg,#ea580c,#c2410c)" onclick="showPage(\'latihan\')"><span class="big">🎯</span>Latihan<small>6 level, 10 soal/sesi</small></button>'+
+    '<button class="menu-tile" style="background:linear-gradient(135deg,#7c3aed,#5b21b6)" onclick="showPage(\'kuis\')"><span class="big">🏆</span>Kuis<small>10 / 15 / 20 soal</small></button>'+
+  '</div>'+
+  '<div class="card navy" style="text-align:center;font-weight:700;color:#bcd0ff">💫 “Setiap langkah kecil dalam belajar adalah lompatan besar menuju keberhasilan.”</div>';
+}
+
+/* ================================================================
+   HALAMAN: MATERI PEMBELAJARAN
+   ================================================================ */
+function poroFull(a,b){const m=computeDivision(a,b);return poroHTML(m,m.steps.length-1);}
+function kotakLangkah(){
+  return '<div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0">'+
+  '<span class="step-chip on">1️⃣ BAGI</span><span class="step-chip on">2️⃣ KALI</span>'+
+  '<span class="step-chip on">3️⃣ KURANG</span><span class="step-chip on">4️⃣ TURUNKAN</span></div>';
+}
+const MATERI=[
+ {t:'Mengenal Pembagian',ico:'🍎',body:function(){return ''+
+   '<p>Pembagian adalah cara <b>membagi suatu jumlah menjadi beberapa kelompok sama banyak</b>, atau menentukan banyaknya isi setiap kelompok.</p>'+
+   '<div class="card" style="background:#f0f9ff;border:2px solid #bae6fd;margin-top:12px"><h3>Contoh: 12 ÷ 3 = 4</h3>'+
+   '<p>12 apel dibagi ke 3 keranjang sama banyak. Setiap keranjang berisi <b>4 apel</b>.</p>'+
+   '<div class="grid g3" style="margin-top:10px">'+
+     '<div style="text-align:center"><div class="fruit">🍎🍎🍎🍎</div><b>Keranjang 1</b></div>'+
+     '<div style="text-align:center"><div class="fruit">🍎🍎🍎🍎</div><b>Keranjang 2</b></div>'+
+     '<div style="text-align:center"><div class="fruit">🍎🍎🍎🍎</div><b>Keranjang 3</b></div>'+
+   '</div></div>'+
+   '<div class="poro-say" style="margin-top:12px">🤖 Poro: Pembagian adalah kebalikan dari perkalian. Karena 3 × 4 = 12, maka 12 ÷ 3 = 4!</div>';}},
+ {t:'Apa Itu Porogapit?',ico:'🧮',body:function(){return ''+
+   '<p><b>Porogapit</b> adalah cara menyelesaikan pembagian dengan <b>menyusun angka secara vertikal</b>, sehingga kita bisa membagi langkah demi langkah. Perhatikan bagian-bagiannya:</p>'+
+   '<div style="display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-top:12px">'+
+     '<div>'+poroFull(84,4)+'</div>'+
+     '<div style="flex:1;min-width:220px">'+
+       '<div class="fb info" style="margin-top:0"><span class="fi">🔵</span><span><b>Hasil bagi (21)</b> — ditulis di atas garis.</span></div>'+
+       '<div class="fb warn"><span class="fi">🟡</span><span><b>Pembagi (4)</b> — di sebelah kiri tanda porogapit.</span></div>'+
+       '<div class="fb ok"><span class="fi">🟢</span><span><b>Bilangan yang dibagi (84)</b> — di dalam tanda porogapit.</span></div>'+
+       '<div class="fb no"><span class="fi">🔴</span><span><b>Sisa pembagian</b> — angka paling bawah. Jika 0, berarti habis dibagi.</span></div>'+
+     '</div>'+
+   '</div>';}},
+ {t:'Langkah Porogapit',ico:'🪜',body:function(){return ''+
+   '<p>Ingat mantra ajaib porogapit:</p>'+kotakLangkah()+
+   '<ol style="padding-left:20px;line-height:2">'+
+     '<li><b>BAGI:</b> Tentukan berapa kali pembagi dapat masuk ke bilangan yang sedang dihitung.</li>'+
+     '<li><b>KALI:</b> Kalikan hasil pembagian sementara dengan pembagi.</li>'+
+     '<li><b>KURANG:</b> Kurangkan hasil perkalian dari bilangan yang sedang dihitung.</li>'+
+     '<li><b>TURUNKAN:</b> Turunkan angka berikutnya, lalu ulangi dari langkah BAGI.</li>'+
+   '</ol>'+
+   '<div class="poro-say" style="margin-top:12px">🤖 Poro: Ulangi terus 4 langkah ini sampai semua angka selesai diproses. Di akhir, <b>sisa harus lebih kecil daripada pembagi</b>!</div>';}},
+ {t:'Contoh Tanpa Sisa: 84 ÷ 4',ico:'✅',body:function(){return ''+
+   '<p>Mari kita kerjakan <b>84 ÷ 4</b> dengan porogapit:</p>'+
+   '<div style="display:flex;gap:18px;flex-wrap:wrap;margin-top:10px"><div>'+poroFull(84,4)+'</div>'+
+   '<ol style="padding-left:20px;line-height:1.9;flex:1;min-width:230px">'+
+     '<li>Lihat angka <b>8</b>. Angka 4 masuk ke 8 sebanyak <b>2</b> kali.</li>'+
+     '<li>Tulis <b>2</b> pada hasil bagi.</li>'+
+     '<li>KALI: 2 × 4 = <b>8</b>.</li>'+
+     '<li>KURANG: 8 − 8 = <b>0</b>.</li>'+
+     '<li>TURUNKAN angka <b>4</b>.</li>'+
+     '<li>4 masuk ke 4 sebanyak <b>1</b> kali. Tulis <b>1</b>.</li>'+
+     '<li>KALI: 1 × 4 = 4. KURANG: 4 − 4 = <b>0</b>.</li>'+
+   '</ol></div>'+
+   '<div class="fb ok"><span class="fi">🎉</span><span>Jadi, <b>84 ÷ 4 = 21</b>, tanpa sisa!</span></div>';}},
+ {t:'Angka Nol pada Hasil Bagi',ico:'0️⃣',body:function(){return ''+
+   '<p>Kadang bilangan yang sedang dihitung <b>lebih kecil daripada pembagi</b>. Saat itu kita wajib menulis <b>0</b> pada hasil bagi — jangan dilewati!</p>'+
+   '<h3 style="margin-top:14px">Contoh 1: 408 ÷ 4 = 102</h3>'+
+   '<div style="display:flex;gap:18px;flex-wrap:wrap"><div>'+poroFull(408,4)+'</div>'+
+   '<ul style="padding-left:20px;line-height:1.9;flex:1;min-width:230px">'+
+     '<li>4 ÷ 4 = <b>1</b>. Tulis 1. Sisa 0.</li>'+
+     '<li>Turunkan <b>0</b>. Sekarang 0 ÷ 4. Karena 0 lebih kecil dari 4, tulis <b>0</b> pada hasil bagi!</li>'+
+     '<li>Turunkan <b>8</b>. 8 ÷ 4 = <b>2</b>. Tulis 2.</li>'+
+     '<li>Hasil: <b>102</b> — nol di tengah tidak boleh hilang.</li>'+
+   '</ul></div>'+
+   '<h3 style="margin-top:14px">Contoh 2: 609 ÷ 3 = 203</h3>'+
+   '<div style="display:flex;gap:18px;flex-wrap:wrap"><div>'+poroFull(609,3)+'</div>'+
+   '<div style="flex:1;min-width:230px"><p style="line-height:1.9">Setelah 6 ÷ 3 = 2, kita turunkan 0. Karena 0 lebih kecil dari 3, hasil baginya <b>0</b> — tulis di tengah. Lalu turunkan 9, dan 9 ÷ 3 = 3. Hasil: <b>203</b>.</p>'+
+   '<div class="fb no"><span class="fi">⚠️</span><span>Jika nol dihapus, jawaban menjadi 23 — itu <b>salah</b>! Nilai tempat sangat penting.</span></div></div></div>';}},
+ {t:'Pembagian dengan Sisa',ico:'🧩',body:function(){return ''+
+   '<p>Tidak semua bilangan habis dibagi. Angka yang tertinggal di akhir disebut <b>sisa</b>.</p>'+
+   '<h3 style="margin-top:14px">Contoh: 157 ÷ 6 = 26 sisa 1</h3>'+
+   '<div style="display:flex;gap:18px;flex-wrap:wrap"><div>'+poroFull(157,6)+'</div>'+
+   '<ul style="padding-left:20px;line-height:1.9;flex:1;min-width:230px">'+
+     '<li>6 × 26 = <b>156</b>.</li>'+
+     '<li>157 − 156 = <b>1</b>.</li>'+
+     '<li>Jadi hasil baginya <b>26</b> dengan sisa <b>1</b>.</li>'+
+   '</ul></div>'+
+   '<div class="fb warn"><span class="fi">📌</span><span><b>Sisa harus selalu lebih kecil daripada pembagi.</b> Sisa 1 &lt; 6 ✓</span></div>'+
+   '<h3 style="margin-top:14px">Contoh tambahan: 245 ÷ 4 = 61 sisa 1</h3>'+
+   '<div>'+poroFull(245,4)+'</div>';}},
+ {t:'Pembagian Bilangan Besar',ico:'🔢',body:function(){return ''+
+   '<p>Untuk bilangan ribuan, langkahnya tetap sama: <b>BAGI → KALI → KURANG → TURUNKAN</b>, hanya diulang lebih banyak. Perhatikan nilai tempat!</p>'+
+   '<h3 style="margin-top:14px">Contoh: 1.248 ÷ 6 = 208</h3>'+
+   '<div style="display:flex;gap:18px;flex-wrap:wrap"><div>'+poroFull(1248,6)+'</div>'+
+   '<ul style="padding-left:20px;line-height:1.9;flex:1;min-width:230px">'+
+     '<li>1 lebih kecil dari 6, jadi ambil <b>12</b>. 12 ÷ 6 = <b>2</b>.</li>'+
+     '<li>2 × 6 = 12. 12 − 12 = 0. Turunkan <b>4</b>.</li>'+
+     '<li>4 lebih kecil dari 6 → tulis <b>0</b> pada hasil bagi!</li>'+
+     '<li>Turunkan <b>8</b> → menjadi 48. 48 ÷ 6 = <b>8</b>.</li>'+
+     '<li>Hasil: <b>208</b>.</li>'+
+   '</ul></div>'+
+   '<div class="poro-say">🤖 Poro: Di Indonesia, angka ribuan ditulis dengan titik: <b>1.248</b>. Saat menghitung, titik itu hanya pemisah ribuan ya!</div>';}},
+ {t:'Memeriksa Jawaban',ico:'🔍',body:function(){return ''+
+   '<p>Kita bisa memeriksa hasil pembagian dengan <b>perkalian</b>:</p>'+
+   '<div class="grid g2" style="margin-top:12px">'+
+   '<div class="card" style="background:#f0fdf4;border:2px solid #86efac;margin:0"><h3>Tanpa sisa</h3>'+
+     '<p style="font-weight:800;color:#166534">Pembagi × Hasil bagi = Bilangan yang dibagi</p>'+
+     '<p style="margin-top:8px">84 ÷ 4 = 21 → Periksa: <b>21 × 4 = 84</b> ✓</p></div>'+
+   '<div class="card" style="background:#fefce8;border:2px solid #fde047;margin:0"><h3>Dengan sisa</h3>'+
+     '<p style="font-weight:800;color:#854d0e">Pembagi × Hasil bagi + Sisa = Bilangan yang dibagi</p>'+
+     '<p style="margin-top:8px">157 ÷ 6 = 26 sisa 1 → Periksa: <b>6 × 26 + 1 = 157</b> ✓</p></div>'+
+   '</div>'+
+   '<div class="poro-say" style="margin-top:12px">🤖 Poro: Biasakan selalu memeriksa jawabanmu. Di halaman Latihan ada tombol <b>Periksa dengan Perkalian</b> — mencobanya juga menyelesaikan misi harian!</div>';}},
+ {t:'Kesalahan yang Sering Terjadi',ico:'⚠️',body:function(){
+   const items=[
+    ['Salah menentukan berapa kali pembagi masuk','Coba daftar perkalian pembagi: 4, 8, 12, 16, … lalu pilih yang paling dekat tanpa melebihi.'],
+    ['Salah menuliskan hasil perkalian','Hitung ulang perkalian pelan-pelan sebelum menulis.'],
+    ['Salah melakukan pengurangan','Periksa pengurangan dengan penjumlahan: hasil + pengurang = bilangan awal.'],
+    ['Lupa menurunkan angka berikutnya','Setelah KURANG, selalu cek: masih ada angka yang belum dipakai? Turunkan!'],
+    ['Menghilangkan angka nol pada hasil bagi','Jika bilangan lebih kecil dari pembagi, tulis 0 — jangan dilompati.'],
+    ['Sisa sama dengan atau lebih besar daripada pembagi','Artinya hasil bagi masih bisa diperbesar. Ulangi langkah BAGI.'],
+    ['Salah menempatkan angka hasil bagi','Hasil bagi ditulis tepat di atas angka terakhir dari bagian yang sedang dibagi.']];
+   let h='<p>Semua orang pernah salah — itu bagian dari belajar! 😊 Kenali kesalahan ini supaya bisa dihindari:</p><div style="margin-top:10px">';
+   items.forEach(it=>{h+='<div class="fb no" style="margin-top:8px"><span class="fi">❌</span><span><b>'+it[0]+'.</b><br><span style="font-weight:500">💡 '+it[1]+'</span></span></div>';});
+   return h+'</div><div class="poro-say" style="margin-top:12px">🤖 Poro: Salah itu tidak apa-apa. Yang hebat adalah mau mencoba lagi!</div>';}}
+];
+function rMateri(){
+  let h='<div class="card"><h2>📘 Materi Pembelajaran</h2><p style="color:#475a8f">Pelajari 9 topik secara berurutan. Topik yang sudah dibaca diberi tanda ✔.</p></div><div class="grid g3">';
+  MATERI.forEach((m,i)=>{
+    const read=S.progress.materialsRead.includes(i);
+    h+='<button class="materi-card'+(read?' read':'')+'" onclick="openMateri('+i+')">'+
+      '<div class="mnum">'+(i+1)+'</div><div><div style="font-weight:800">'+m.ico+' '+m.t+'</div>'+
+      '<div style="font-size:.8rem;color:#5b6b9e;margin-top:4px">'+(read?'✔ Sudah dipelajari':'Ketuk untuk mempelajari')+'</div></div></button>';
+  });
+  return h+'</div>';
+}
+function openMateri(i){
+  if(!S.progress.materialsRead.includes(i)){
+    S.progress.materialsRead.push(i);save();missionEvent('m3');
+  }
+  const m=MATERI[i];
+  const nav='<div class="btn-row" style="margin-top:18px">'+
+    (i>0?'<button class="btn ghost" onclick="openMateri('+(i-1)+')">← Materi '+i+'</button>':'')+
+    '<button class="btn ghost" onclick="showPage(\'materi\')">📘 Daftar Materi</button>'+
+    (i<MATERI.length-1?'<button class="btn primary" onclick="openMateri('+(i+1)+')">Materi '+(i+2)+' →</button>':'<button class="btn green" onclick="showPage(\'simulasi\')">🖥️ Lanjut ke Simulasi</button>')+
+    '<button class="btn cyan" onclick="showPage(\'latihan\')">✏️ Coba Soal</button></div>';
+  $('page').innerHTML='<div class="card"><h2>'+m.ico+' Materi '+(i+1)+': '+m.t+'</h2><div style="margin-top:10px;line-height:1.7">'+m.body()+'</div>'+nav+'</div>';
+  window.scrollTo(0,0);
+  sfx.click();
+}
+/* ================================================================
+   HALAMAN: SIMULASI POROGAPIT (3 mode)
+   ================================================================ */
+const SIM_PRESETS=[[84,4],[96,3],[408,4],[609,3],[157,6],[245,4],[1248,6],[1248,12],[3456,16],[517,8]];
+let SIM={mode:'demo',model:null,step:-1,showExp:true,
+  g:{tries:0,wrongSteps:[],totalQ:0,firstTry:0,curWrong:0,finished:false,hintShown:false}};
+
+function rSimulasi(){
+  if(!SIM.model) SIM.model=computeDivision(84,4);
+  setTimeout(renderSim,0);
+  return '<div class="card"><h2>🖥️ Simulasi Porogapit</h2>'+
+  '<p style="color:#475a8f">Pilih mode belajarmu. Semua simulasi mengikuti algoritma pembagian bersusun yang sebenarnya.</p>'+
+  '<div class="tabs" style="margin-top:12px">'+
+   '<button class="tab" id="tab-demo" onclick="simSetMode(\'demo\')">🎬 Demonstrasi</button>'+
+   '<button class="tab" id="tab-guided" onclick="simSetMode(\'guided\')">🧭 Belajar Terbimbing</button>'+
+   '<button class="tab" id="tab-free" onclick="simSetMode(\'free\')">🚀 Mandiri</button>'+
+  '</div>'+
+  '<div id="sim-body"></div></div>';
+}
+function simSetMode(m){
+  SIM.mode=m;SIM.step=(m==='demo'?-1:0);
+  SIM.g={tries:0,wrongSteps:[],totalQ:0,firstTry:0,curWrong:0,finished:false,hintShown:false};
+  sfx.click();renderSim();
+}
+function simPickHTML(){
+  let h='<div style="margin-top:14px"><label class="lbl">Ganti Soal — pilih cepat:</label><div style="display:flex;gap:8px;flex-wrap:wrap">';
+  SIM_PRESETS.forEach(p=>{
+    const act=(SIM.model&&SIM.model.dividend===p[0]&&SIM.model.divisor===p[1]);
+    h+='<button class="btn small '+(act?'primary':'ghost')+'" onclick="simLoad('+p[0]+','+p[1]+')">'+fmt(p[0])+' ÷ '+p[1]+'</button>';
+  });
+  h+='</div><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin-top:10px">'+
+   '<div><label class="lbl" for="sim-a">Bilangan yang dibagi</label><input class="input num" style="width:140px" id="sim-a" type="number" min="1" inputmode="numeric"></div>'+
+   '<div style="font-size:1.5rem;font-weight:900;padding-bottom:8px">÷</div>'+
+   '<div><label class="lbl" for="sim-b">Pembagi</label><input class="input num" style="width:100px" id="sim-b" type="number" min="1" inputmode="numeric"></div>'+
+   '<button class="btn cyan" onclick="simCustom()">Buat Soal</button></div></div>';
+  return h;
+}
+function simCustom(){
+  const a=parseInt($('sim-a').value,10),b=parseInt($('sim-b').value,10);
+  if($('sim-a').value===''||$('sim-b').value===''||isNaN(a)||isNaN(b)){toast('Isi kedua angka terlebih dahulu ya!','err');return;}
+  const err=validDivision(a,b);
+  if(err){toast(err,'err');sfx.wrong();return;}
+  simLoad(a,b);
+}
+function simLoad(a,b){
+  const m=computeDivision(a,b);
+  if(m.error){toast(m.error,'err');return;}
+  SIM.model=m;SIM.step=(SIM.mode==='demo'?-1:0);
+  SIM.g={tries:0,wrongSteps:[],totalQ:0,firstTry:0,curWrong:0,finished:false,hintShown:false};
+  sfx.click();renderSim();
+}
+function renderSim(){
+  const tabs={demo:'tab-demo',guided:'tab-guided',free:'tab-free'};
+  Object.keys(tabs).forEach(k=>{const el=$(tabs[k]);if(el)el.classList.toggle('active',SIM.mode===k);});
+  const body=$('sim-body');if(!body)return;
+  if(SIM.mode==='demo')body.innerHTML=simDemoHTML();
+  else body.innerHTML=simWorkHTML();
+}
+/* ----- Mode Demonstrasi ----- */
+function simDemoHTML(){
+  const m=SIM.model;
+  const started=SIM.step>=0;
+  const atEnd=SIM.step>=m.steps.length-1;
+  const expl=started?m.steps[SIM.step].text:'Tekan tombol Mulai, lalu Langkah Berikutnya untuk melihat pengerjaan tahap demi tahap.';
+  const label=started?simStepLabel(m.steps[SIM.step].type):'SIAP';
+  return '<div class="grid g2" style="align-items:start">'+
+  '<div><h3>Soal: '+fmt(m.dividend)+' ÷ '+m.divisor+'</h3>'+
+    '<div id="sim-poro">'+(started?poroHTML(m,SIM.step):poroHTML(m,-1))+'</div>'+
+    '<div class="btn-row">'+
+      '<button class="btn primary small" onclick="simDemoStart()">▶ Mulai</button>'+
+      '<button class="btn ghost small" onclick="simDemoPrev()" '+(SIM.step<=0?'disabled':'')+'>← Sebelumnya</button>'+
+      '<button class="btn green small" onclick="simDemoNext()" '+(atEnd?'disabled':'')+'>Langkah Berikutnya →</button>'+
+      '<button class="btn cyan small" onclick="simDemoReplay()">🔄 Putar Ulang</button>'+
+      '<button class="btn yellow small" onclick="SIM.showExp=!SIM.showExp;renderSim()">💬 '+(SIM.showExp?'Sembunyikan':'Tampilkan')+' Penjelasan</button>'+
+    '</div></div>'+
+  '<div><div class="step-chip on" style="margin-bottom:10px">Langkah: '+label+'</div>'+
+    (SIM.showExp?'<div class="poro-say">🤖 '+expl+'</div>':'')+
+    (atEnd&&started?'<div class="fb ok"><span class="fi">🎉</span><span>Selesai! '+fmt(m.dividend)+' ÷ '+m.divisor+' = <b>'+fmt(m.q)+'</b>'+(m.r>0?' sisa <b>'+fmt(m.r)+'</b>':'')+'. Periksa: '+m.divisor+' × '+fmt(m.q)+(m.r>0?' + '+fmt(m.r):'')+' = '+fmt(m.dividend)+' ✓</span></div>':'')+
+    simPickHTML()+'</div></div>';
+}
+function simStepLabel(t){
+  return {mulai:'MULAI',bagi:'1️⃣ BAGI',kali:'2️⃣ KALI',kurang:'3️⃣ KURANG',turun:'4️⃣ TURUNKAN',selesai:'🏁 SELESAI'}[t]||t;
+}
+function simDemoStart(){SIM.step=0;sfx.click();renderSim();}
+function simDemoNext(){if(SIM.step<SIM.model.steps.length-1){SIM.step++;sfx.click();if(SIM.model.steps[SIM.step].type==='selesai')sfx.win();renderSim();}}
+function simDemoPrev(){if(SIM.step>0){SIM.step--;sfx.click();renderSim();}}
+function simDemoReplay(){SIM.step=-1;sfx.click();renderSim();}
+
+/* ----- Mode Terbimbing & Mandiri ----- */
+function simNextTarget(){
+  const m=SIM.model;
+  const i=SIM.step+1;
+  if(i>=m.steps.length)return null;
+  return {idx:i,s:m.steps[i]};
+}
+function simQuestion(s){
+  const d=SIM.model.divisor;
+  if(s.type==='bagi')return {text:'1️⃣ BAGI: Berapa kali '+d+' dapat masuk ke '+fmt(s.chunk)+'?',ans:s.q,
+    hint:'Cari bilangan terbesar yang jika dikalikan '+d+' hasilnya tidak lebih dari '+fmt(s.chunk)+'. Coba urutkan: '+d+'×1='+d+', '+d+'×2='+(d*2)+', '+d+'×3='+(d*3)+', …'};
+  if(s.type==='kali')return {text:'2️⃣ KALI: '+s.q+' × '+d+' = … ?',ans:s.prod,
+    hint:'Gunakan perkalian dasar. '+s.q+' × '+d+' artinya '+d+' dijumlahkan sebanyak '+s.q+' kali.'};
+  if(s.type==='kurang')return {text:'3️⃣ KURANG: '+fmt(s.chunk)+' − '+fmt(s.prod)+' = … ?',ans:s.diff,
+    hint:'Kurangkan pelan-pelan: '+fmt(s.chunk)+' − '+fmt(s.prod)+'. Periksa dengan penjumlahan: jawaban + '+fmt(s.prod)+' harus = '+fmt(s.chunk)+'.'};
+  if(s.type==='turun')return {text:'4️⃣ TURUNKAN: Angka berapa yang harus diturunkan berikutnya?',ans:s.digit,
+    hint:'Lihat bilangan '+fmt(SIM.model.dividend)+'. Ambil angka pertama yang belum dipakai (tepat setelah angka terakhir yang diproses).'};
+  return null;
+}
+function simWorkHTML(){
+  const m=SIM.model;const guided=(SIM.mode==='guided');
+  if(SIM.g.finished)return simResultHTML();
+  const t=simNextTarget();
+  if(t&&t.s.type==='mulai'){SIM.step=t.idx;return simWorkHTML();}
+  if(!t||t.s.type==='selesai')return simFinish();
+  const q=simQuestion(t.s);
+  return '<div class="grid g2" style="align-items:start">'+
+  '<div><h3>Soal: '+fmt(m.dividend)+' ÷ '+m.divisor+'</h3>'+
+    '<div id="sim-poro">'+poroHTML(m,SIM.step)+'</div>'+
+    '<div style="font-size:.82rem;color:#5b6b9e;margin-top:4px">Mode: '+(guided?'Belajar Terbimbing — jawab setiap langkah, Poro membimbingmu.':'Mandiri — kerjakan sendiri, evaluasi muncul di akhir.')+'</div>'+
+    simPickHTML()+'</div>'+
+  '<div><div class="step-chip on" style="margin-bottom:10px">'+simStepLabel(t.s.type)+'</div>'+
+    '<div class="poro-say" style="margin-bottom:12px">🤖 '+q.text+'</div>'+
+    '<label class="lbl" for="sim-ans">Jawabanmu</label>'+
+    '<div style="display:flex;gap:8px"><input id="sim-ans" class="input num" type="number" inputmode="numeric" style="max-width:160px" onkeydown="if(event.key===\'Enter\')simSubmit()">'+
+    '<button class="btn green" onclick="simSubmit()">Jawab</button></div>'+
+    '<div id="sim-fb"></div>'+
+    (guided?'<div class="btn-row"><button class="btn yellow small" onclick="simHint()">💡 Lihat Petunjuk</button>'+
+      '<button class="btn ghost small" onclick="$(\'sim-ans\').value=\'\';$(\'sim-ans\').focus()">🔁 Coba Lagi</button></div>':'')+
+    '<div style="margin-top:12px;font-size:.84rem;color:#5b6b9e">Langkah terjawab: <b>'+SIM.g.totalQ+'</b>'+(guided?'':' · dinilai di akhir')+'</div>'+
+  '</div></div>';
+}
+function simHint(){
+  const t=simNextTarget();if(!t)return;
+  const q=simQuestion(t.s);
+  const fb=$('sim-fb');
+  if(fb)fb.innerHTML='<div class="fb warn"><span class="fi">💡</span><span>'+q.hint+'</span></div>';
+  sfx.click();
+}
+function simSubmit(){
+  const t=simNextTarget();if(!t)return;
+  const q=simQuestion(t.s);
+  const inp=$('sim-ans');
+  if(inp.value===''){toast('Isi jawabanmu dulu ya!','err');inp.focus();return;}
+  const val=parseInt(inp.value,10);
+  if(isNaN(val)){toast('Masukkan angka yang benar.','err');return;}
+  const correct=(val===q.ans);
+  const guided=(SIM.mode==='guided');
+  if(guided){
+    if(correct){
+      SIM.g.totalQ++;if(SIM.g.curWrong===0)SIM.g.firstTry++;
+      SIM.g.curWrong=0;SIM.step=t.idx;sfx.correct();
+      renderSim();
+      const fb=$('sim-fb');
+      if(fb)fb.innerHTML='<div class="fb ok bounce"><span class="fi">✅</span><span><b>Benar!</b> '+esc(t.s.text)+'</span></div>';
+      const poroEl=$('sim-poro');if(poroEl&&S.settings.anim)poroEl.classList.add('bounce');
+    }else{
+      SIM.g.curWrong++;sfx.wrong();
+      const fb=$('sim-fb');
+      let msg='Belum tepat. '+q.hint;
+      if(SIM.g.curWrong>=3)msg+='<br><b>Petunjuk kuat:</b> jawaban yang benar adalah angka antara '+(Math.max(0,q.ans-2))+' dan '+(q.ans+2)+'. Coba hitung sekali lagi!';
+      if(fb)fb.innerHTML='<div class="fb no"><span class="fi">🤔</span><span>'+msg+'</span></div>';
+      inp.select();
+    }
+  }else{
+    SIM.g.totalQ++;
+    if(correct){SIM.g.firstTry++;sfx.click();}
+    else{SIM.g.wrongSteps.push({soal:q.text,jawab:val,benar:q.ans});sfx.click();}
+    SIM.step=t.idx;
+    renderSim();
+    const fb=$('sim-fb');
+    if(fb)fb.innerHTML='<div class="fb info"><span class="fi">📝</span><span>Jawaban terekam. Lanjutkan ke langkah berikutnya!</span></div>';
+  }
+  const nt=simNextTarget();
+  if(nt&&nt.s.type==='selesai'){SIM.step=nt.idx;setTimeout(()=>{renderSim();},guided?700:300);}
+  const na=$('sim-ans');if(na){na.value='';na.focus();}
+}
+function simFinish(){
+  if(!SIM.g.finished){
+    SIM.g.finished=true;
+    S.progress.simDone++;
+    missionEvent('m4');
+    const perfect=SIM.g.wrongSteps.length===0&&SIM.g.firstTry===SIM.g.totalQ;
+    addPoints(20);if(perfect)addStars(1);
+    recordHistory({type:'simulasi',mode:SIM.mode,soal:fmt(SIM.model.dividend)+' ÷ '+SIM.model.divisor,
+      total:SIM.g.totalQ,correct:SIM.g.firstTry,wrong:SIM.g.totalQ-SIM.g.firstTry});
+    save();checkBadges();sfx.win();confetti();
+  }
+  return simResultHTML();
+}
+function simResultHTML(){
+  const m=SIM.model;
+  const okAll=SIM.g.firstTry===SIM.g.totalQ;
+  let h='<div style="text-align:center;padding:10px">'+poroSVG(90)+
+  '<h3 style="margin-top:8px">🎉 Simulasi Selesai!</h3>'+
+  '<p style="font-size:1.2rem;font-weight:800;margin:8px 0">'+fmt(m.dividend)+' ÷ '+m.divisor+' = '+fmt(m.q)+(m.r>0?' sisa '+fmt(m.r):'')+'</p>'+
+  '<p>Pemeriksaan: '+m.divisor+' × '+fmt(m.q)+(m.r>0?' + '+fmt(m.r):'')+' = '+fmt(m.dividend)+' ✓</p>'+
+  '<div class="grid g3" style="margin:14px 0"><div class="stat-card"><div class="sv">'+SIM.g.totalQ+'</div><div class="sl">Langkah dijawab</div></div>'+
+  '<div class="stat-card"><div class="sv">'+SIM.g.firstTry+'</div><div class="sl">Benar langsung</div></div>'+
+  '<div class="stat-card"><div class="sv">'+(okAll?'⭐ +1':'—')+'</div><div class="sl">Bonus bintang</div></div></div></div>';
+  if(SIM.g.wrongSteps.length){
+    h+='<h3>Langkah yang perlu dicermati:</h3>';
+    SIM.g.wrongSteps.forEach(w=>{
+      h+='<div class="fb no"><span class="fi">✏️</span><span>'+esc(w.soal)+'<br>Jawabanmu: <b>'+w.jawab+'</b> → yang benar: <b>'+w.benar+'</b></span></div>';
+    });
+  }else{
+    h+='<div class="fb ok"><span class="fi">🌟</span><span>Luar biasa! Semua langkah kamu jawab dengan tepat.</span></div>';
+  }
+  h+='<div style="margin-top:12px">'+poroHTML(m,m.steps.length-1)+'</div>'+
+  '<div class="btn-row"><button class="btn primary" onclick="simLoad('+m.dividend+','+m.divisor+')">🔄 Ulangi Soal Ini</button>'+
+  '<button class="btn cyan" onclick="simRandomNext()">🎲 Soal Lain</button>'+
+  '<button class="btn ghost" onclick="showPage(\'beranda\')">🏠 Beranda</button></div>';
+  return h;
+}
+function simRandomNext(){
+  const cur=SIM.model;
+  const opts=SIM_PRESETS.filter(p=>!(p[0]===cur.dividend&&p[1]===cur.divisor));
+  const p=opts[Math.floor(Math.random()*opts.length)];
+  simLoad(p[0],p[1]);
+}
+/* ================================================================
+   HALAMAN: LATIHAN BERTAHAP
+   ================================================================ */
+const BANK_L1=[[24,2],[36,3],[48,4],[55,5],[72,6],[84,4],[66,3],[96,8],[75,5],[52,4],[91,7],[64,4]];
+const BANK_L2=[[96,3],[144,4],[168,6],[225,5],[252,7],[128,4],[135,5],[216,6],[112,7],[196,4],[324,9],[185,5]];
+const BANK_L3=[[408,4],[609,3],[816,8],[1248,6],[520,5],[728,7],[936,9],[612,6],[840,8],[309,3],[428,4],[618,6]];
+const BANK_L4=[[157,6],[245,4],[389,7],[517,8],[673,5],[94,4],[125,6],[233,7],[86,5],[199,8],[341,6],[450,7]];
+const BANK_L5=[[1248,12],[1536,16],[2184,21],[3456,16],[1875,15],[1344,12],[2250,18],[2016,14],[1792,16],[2730,21],[1920,16],[1452,12]];
+const BANK_L6=[
+ {txt:'Bu Guru memiliki {A} buku. Buku itu dibagikan sama banyak ke {B} kelas. Berapa buku yang diterima setiap kelas?',a:96,b:4,unit:'buku'},
+ {txt:'Koperasi sekolah memiliki {A} pensil yang dibagikan sama rata ke {B} kelompok belajar. Berapa pensil untuk setiap kelompok?',a:120,b:6,unit:'pensil'},
+ {txt:'Pak Tani memetik {A} jeruk dan memasukkannya sama banyak ke {B} keranjang. Berapa jeruk di setiap keranjang?',a:144,b:12,unit:'jeruk'},
+ {txt:'Andi mempunyai {A} kelereng yang dibagikan sama banyak kepada {B} temannya. Berapa kelereng untuk setiap teman?',a:85,b:5,unit:'kelereng'},
+ {txt:'Ibu membuat {A} kue dan menatanya sama banyak ke dalam {B} kotak. Berapa kue dalam setiap kotak?',a:132,b:6,unit:'kue'},
+ {txt:'Perpustakaan menerima {A} buku baru untuk disusun sama banyak di {B} rak. Berapa buku di setiap rak?',a:204,b:4,unit:'buku'},
+ {txt:'Sebanyak {A} permen dimasukkan sama banyak ke dalam {B} toples. Berapa permen dalam setiap toples?',a:150,b:6,unit:'permen'},
+ {txt:'Sekolah membagikan {A} lembar kertas sama banyak ke {B} kelas. Berapa lembar kertas yang diterima tiap kelas?',a:408,b:4,unit:'lembar'},
+ {txt:'Peternak mengemas {A} telur sama banyak ke dalam {B} wadah. Berapa telur dalam setiap wadah?',a:216,b:18,unit:'telur'},
+ {txt:'Pak Budi menanam {A} bibit pohon dalam {B} baris sama banyak. Berapa bibit di setiap baris?',a:315,b:7,unit:'bibit'},
+ {txt:'Sebanyak {A} siswa mengikuti karyawisata menggunakan {B} bus dengan isi sama banyak. Berapa siswa dalam setiap bus?',a:252,b:7,unit:'siswa'},
+ {txt:'Toko roti menata {A} roti sama banyak di atas {B} piring saji. Berapa roti pada setiap piring?',a:180,b:12,unit:'roti'}
+];
+const LEVELS=[
+ {id:1,ico:'🌱',name:'Pemula',desc:'Pembagian sederhana dua angka',bank:BANK_L1},
+ {id:2,ico:'🌿',name:'Dasar',desc:'Dua & tiga digit tanpa sisa',bank:BANK_L2},
+ {id:3,ico:'0️⃣',name:'Menengah',desc:'Hasil bagi mengandung angka nol',bank:BANK_L3},
+ {id:4,ico:'🧩',name:'Dengan Sisa',desc:'Hasil bagi dan sisa',bank:BANK_L4},
+ {id:5,ico:'💪',name:'Pembagi 2 Digit',desc:'Pembagi dua digit, bilangan besar',bank:BANK_L5},
+ {id:6,ico:'📖',name:'Soal Cerita',desc:'Pembagian dalam kehidupan sehari-hari',bank:BANK_L6}
+];
+let LX=null;
+function rLatihan(){
+  LX=null;
+  let h='<div class="card"><h2>🎯 Latihan Bertahap</h2><p style="color:#475a8f">Pilih level. Setiap sesi berisi 10 soal acak tanpa pengulangan. Level selesai (minimal 7 benar) diberi tanda ✔.</p></div><div class="grid g3">';
+  LEVELS.forEach(L=>{
+    const done=S.progress.levelsDone.includes(L.id);
+    h+='<button class="materi-card'+(done?' read':'')+'" onclick="startLatihan('+L.id+')">'+
+    '<div class="mnum">'+L.id+'</div><div><div style="font-weight:800">'+L.ico+' Level '+L.id+' — '+L.name+'</div>'+
+    '<div style="font-size:.8rem;color:#5b6b9e;margin-top:4px">'+L.desc+(done?' · ✔ Selesai':'')+'</div></div></button>';
+  });
+  return h+'</div>';
+}
+function startLatihan(id){
+  const L=LEVELS.find(x=>x.id===id);
+  const items=shuffle(L.bank).slice(0,10).map(it=>{
+    if(id===6){const m=computeDivision(it.a,it.b);return {a:it.a,b:it.b,q:m.q,r:m.r,story:it.txt.replace('{A}',fmt(it.a)).replace('{B}',it.b),unit:it.unit};}
+    const m=computeDivision(it[0],it[1]);
+    return {a:it[0],b:it[1],q:m.q,r:m.r};
+  });
+  LX={level:L,qs:items,i:0,correct:0,answered:false,done:false};
+  sfx.click();renderLatihan();
+}
+function renderLatihan(){
+  if(!LX)return;
+  if(LX.done){renderLatihanEnd();return;}
+  const q=LX.qs[LX.i];
+  const total=LX.qs.length;
+  const pct=Math.round(LX.i/total*100);
+  let soal;
+  if(q.story){soal='<p style="font-size:1.05rem;line-height:1.7">'+q.story+'</p>';}
+  else{soal='<p style="font-size:2rem;font-weight:900;color:#1d4ed8;text-align:center;margin:8px 0">'+fmt(q.a)+' ÷ '+q.b+' = …</p>';}
+  const needRem=q.r>0;
+  $('page').innerHTML='<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">'+
+  '<h2>'+LX.level.ico+' Level '+LX.level.id+' — '+LX.level.name+'</h2>'+
+  '<span class="chip" style="color:#1d4ed8;background:#e8efff;border-color:#bfd3ff">Soal '+(LX.i+1)+' dari '+total+'</span></div>'+
+  '<div class="pbar" style="margin:10px 0"><div class="blue" style="width:'+pct+'%"></div></div>'+
+  '<div class="grid g2" style="align-items:start;margin-top:10px"><div>'+
+  '<div class="card" style="background:#f0f9ff;border:2px solid #bae6fd;margin:0">'+soal+
+  '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-top:10px">'+
+  '<div><label class="lbl" for="lx-q">Hasil bagi'+(q.unit?' ('+q.unit+')':'')+'</label><input id="lx-q" class="input num" type="number" inputmode="numeric" style="width:150px" onkeydown="if(event.key===\'Enter\')lxSubmit()"></div>'+
+  (needRem?'<div><label class="lbl" for="lx-r">Sisa</label><input id="lx-r" class="input num" type="number" inputmode="numeric" style="width:110px" onkeydown="if(event.key===\'Enter\')lxSubmit()"></div>':'')+
+  '<button class="btn green" id="lx-go" onclick="lxSubmit()">Jawab</button></div>'+
+  '<div id="lx-fb"></div><div id="lx-next"></div></div>'+
+  '<div class="btn-row"><button class="btn ghost small" onclick="showPage(\'latihan\')">← Pilih Level</button><button class="btn ghost small" onclick="showPage(\'beranda\')">🏠 Beranda</button></div>'+
+  '</div><div style="text-align:center">'+poroSVG(100)+
+  '<div class="poro-say" style="margin-top:8px">🤖 Semangat! Ingat: BAGI → KALI → KURANG → TURUNKAN.'+(needRem?' Soal ini <b>punya sisa</b>!':'')+'</div>'+
+  '<div style="margin-top:10px;font-weight:800;color:#166534">Benar sejauh ini: '+LX.correct+'</div></div></div></div>';
+  const el=$('lx-q');if(el)el.focus();
+}
+function lxSubmit(){
+  if(!LX||LX.answered)return;
+  const q=LX.qs[LX.i];
+  const vq=$('lx-q').value,vr=q.r>0?$('lx-r').value:null;
+  if(vq===''||(q.r>0&&vr==='')){toast('Isi jawabanmu dulu ya!','err');return;}
+  const aq=parseInt(vq,10),ar=q.r>0?parseInt(vr,10):0;
+  if(isNaN(aq)||(q.r>0&&isNaN(ar))){toast('Masukkan angka yang benar.','err');return;}
+  const correct=(aq===q.q)&&(q.r>0?ar===q.r:true);
+  LX.answered=true;
+  if(correct)LX.correct++;
+  onAnswered(correct,q.a,q.b,String(q.q).includes('0'),q.r>0);
+  const fb=$('lx-fb');
+  const verif=q.b+' × '+fmt(q.q)+(q.r>0?' + '+fmt(q.r):'')+' = '+fmt(q.a);
+  if(correct){
+    sfx.correct();if(S.settings.fx)confetti();
+    fb.innerHTML='<div class="fb ok bounce"><span class="fi">🎉</span><span><b>Benar sekali!</b> '+fmt(q.a)+' ÷ '+q.b+' = '+fmt(q.q)+(q.r>0?' sisa '+fmt(q.r):'')+'. +10 poin!</span></div>';
+  }else{
+    sfx.wrong();
+    fb.innerHTML='<div class="fb no"><span class="fi">💪</span><span><b>Belum tepat, tidak apa-apa!</b> Jawaban yang benar: '+fmt(q.a)+' ÷ '+q.b+' = <b>'+fmt(q.q)+(q.r>0?' sisa '+fmt(q.r):'')+'</b>.<br>Coba perhatikan lagi langkah BAGI-KALI-KURANG-TURUNKAN.</span></div>';
+  }
+  $('lx-next').innerHTML='<div class="btn-row">'+
+   '<button class="btn yellow small" onclick="lxVerify()">🔍 Periksa dengan Perkalian</button>'+
+   '<button class="btn cyan small" onclick="lxShowPoro()">👀 Lihat Porogapit</button>'+
+   '<button class="btn primary" onclick="lxNext()">'+(LX.i+1>=LX.qs.length?'🏁 Lihat Hasil':'Soal Berikutnya →')+'</button></div>'+
+   '<div id="lx-extra"></div>';
+  const vb=$('lx-fb');vb.dataset.verif=verif;
+}
+function lxVerify(){
+  const q=LX.qs[LX.i];
+  missionEvent('m5');
+  $('lx-extra').innerHTML='<div class="fb info"><span class="fi">🔍</span><span>Pemeriksaan: <b>'+q.b+' × '+fmt(q.q)+(q.r>0?' + '+fmt(q.r):'')+' = '+fmt(q.a)+'</b> ✓ Cocok dengan bilangan yang dibagi!</span></div>';
+  sfx.click();
+}
+function lxShowPoro(){
+  const q=LX.qs[LX.i];const m=computeDivision(q.a,q.b);
+  openModal('<h3>Porogapit: '+fmt(q.a)+' ÷ '+q.b+'</h3>'+poroHTML(m,m.steps.length-1)+
+  '<button class="btn primary" onclick="closeModal()">Tutup</button>');
+}
+function lxNext(){
+  LX.i++;LX.answered=false;sfx.click();
+  if(LX.i>=LX.qs.length){LX.done=true;lxFinish();}
+  else renderLatihan();
+}
+function lxFinish(){
+  const total=LX.qs.length,c=LX.correct;
+  const score=Math.round(c/total*100);
+  const stars=score>=90?3:score>=75?2:score>=50?1:0;
+  addStars(stars);
+  if(c>=7&&!S.progress.levelsDone.includes(LX.level.id))S.progress.levelsDone.push(LX.level.id);
+  recordHistory({type:'latihan',level:LX.level.id,total:total,correct:c,wrong:total-c,score:score});
+  save();checkBadges();
+  if(score>=75){sfx.win();confetti();}
+  renderLatihanEnd();
+}
+function renderLatihanEnd(){
+  const total=LX.qs.length,c=LX.correct,score=Math.round(c/total*100);
+  const stars=score>=90?3:score>=75?2:score>=50?1:0;
+  $('page').innerHTML='<div class="card" style="text-align:center">'+poroSVG(100)+
+  '<h2 style="margin-top:10px">Sesi Latihan Selesai!</h2>'+
+  '<p style="font-size:2.2rem;font-weight:900;color:#1d4ed8;margin:8px 0">Nilai: '+score+'</p>'+
+  '<p style="font-size:1.5rem">'+('⭐'.repeat(stars)||'🌱')+'</p>'+
+  '<div class="grid g3" style="margin:14px 0"><div class="stat-card"><div class="sv">'+total+'</div><div class="sl">Jumlah Soal</div></div>'+
+  '<div class="stat-card"><div class="sv" style="color:#16a34a">'+c+'</div><div class="sl">Benar</div></div>'+
+  '<div class="stat-card"><div class="sv" style="color:#dc2626">'+(total-c)+'</div><div class="sl">Salah</div></div></div>'+
+  (c>=7?'<div class="fb ok"><span class="fi">🏅</span><span>Hebat! Level '+LX.level.id+' berhasil kamu selesaikan.</span></div>'
+   :'<div class="fb warn"><span class="fi">💪</span><span>Teruslah berlatih! Dapatkan minimal 7 jawaban benar untuk menyelesaikan level ini.</span></div>')+
+  '<div class="btn-row" style="justify-content:center"><button class="btn primary" onclick="startLatihan('+LX.level.id+')">🔄 Ulangi Level</button>'+
+  '<button class="btn cyan" onclick="showPage(\'latihan\')">📶 Pilih Level Lain</button>'+
+  '<button class="btn ghost" onclick="showPage(\'beranda\')">🏠 Beranda</button></div></div>';
+}
+
+/* ================================================================
+   HALAMAN: KUIS TANTANGAN
+   ================================================================ */
+const QZ_EXACT=BANK_L1.concat(BANK_L2,BANK_L3,BANK_L5);
+let QZ=null,qzTimerInt=null;
+function rKuis(){
+  QZ=null;if(qzTimerInt){clearInterval(qzTimerInt);qzTimerInt=null;}
+  return '<div class="card"><h2>🏆 Kuis Tantangan</h2>'+
+  '<p style="color:#475a8f">Uji kemampuanmu! Soal diacak dari bank soal tervalidasi: pilihan ganda, isian angka, hasil bagi, sisa, menemukan langkah yang salah, urutan langkah, dan soal cerita.</p>'+
+  '<h3 style="margin-top:14px">Pilih jumlah soal:</h3>'+
+  '<div class="btn-row"><button class="btn primary" onclick="startKuis(10)">10 Soal</button>'+
+  '<button class="btn cyan" onclick="startKuis(15)">15 Soal</button>'+
+  '<button class="btn yellow" onclick="startKuis(20)">20 Soal</button></div>'+
+  '<div class="fb info" style="margin-top:16px"><span class="fi">📏</span><span>Nilai = (Jawaban Benar ÷ Jumlah Soal) × 100. Raih nilai 90+ untuk gelar <b>Master Porogapit</b>!</span></div></div>';
+}
+function mcOptions(correct,cands){
+  const set=[correct];
+  cands.forEach(c=>{if(set.length<4&&c>0&&!set.includes(c))set.push(c);});
+  let add=1;
+  while(set.length<4){const c=correct+add;if(c>0&&!set.includes(c))set.push(c);add=add>0?-add:(-add+1);}
+  return shuffle(set);
+}
+function stripZero(n){const s=String(n).replace('0','');return s===''?n:parseInt(s,10);}
+function makeQuiz(count){
+  const used={};const qs=[];
+  const pools={exact:shuffle(QZ_EXACT),rem:shuffle(BANK_L4),story:shuffle(BANK_L6),small:shuffle(BANK_L1)};
+  let pi={exact:0,rem:0,story:0,small:0};
+  function take(pool){const arr=pools[pool];for(;pi[pool]<arr.length;pi[pool]++){const it=arr[pi[pool]];const k=pool+(it.a||it[0])+'_'+(it.b||it[1]);if(!used[k]){used[k]=1;pi[pool]++;return it;}}pi[pool]=0;return arr[Math.floor(Math.random()*arr.length)];}
+  const types=[1,2,3,4,5,6,7];
+  for(let i=0;i<count;i++){
+    const t=types[i%types.length];
+    if(t===1){const p=take('exact');const m=computeDivision(p[0],p[1]);
+      const opts=mcOptions(m.q,[m.q+1,m.q-1,String(m.q).includes('0')?stripZero(m.q):m.q+10]);
+      qs.push({kind:'mc',text:'Hasil dari '+fmt(p[0])+' ÷ '+p[1]+' adalah …',opts:opts.map(fmt),ansIdx:opts.indexOf(m.q),
+        explain:fmt(p[0])+' ÷ '+p[1]+' = '+fmt(m.q)+'. Periksa: '+p[1]+' × '+fmt(m.q)+' = '+fmt(p[0])+'.',meta:{a:p[0],b:p[1],q:m.q,r:0}});}
+    else if(t===2){const p=take('exact');const m=computeDivision(p[0],p[1]);
+      qs.push({kind:'num',text:'Hitunglah: '+fmt(p[0])+' ÷ '+p[1]+' = …',ansNum:m.q,
+        explain:'Dengan porogapit, '+fmt(p[0])+' ÷ '+p[1]+' = '+fmt(m.q)+'. Periksa: '+p[1]+' × '+fmt(m.q)+' = '+fmt(p[0])+'.',meta:{a:p[0],b:p[1],q:m.q,r:0}});}
+    else if(t===3){const p=take('rem');const m=computeDivision(p[0],p[1]);
+      qs.push({kind:'num',text:fmt(p[0])+' ÷ '+p[1]+' = … sisa '+fmt(m.r)+'. Berapa hasil baginya?',ansNum:m.q,
+        explain:'Hasil bagi = '+fmt(m.q)+', karena '+p[1]+' × '+fmt(m.q)+' + '+fmt(m.r)+' = '+fmt(p[0])+'.',meta:{a:p[0],b:p[1],q:m.q,r:m.r}});}
+    else if(t===4){const p=take('rem');const m=computeDivision(p[0],p[1]);
+      qs.push({kind:'num',text:fmt(p[0])+' ÷ '+p[1]+' = '+fmt(m.q)+' sisa … . Berapa sisanya?',ansNum:m.r,
+        explain:'Sisa = '+fmt(p[0])+' − ('+p[1]+' × '+fmt(m.q)+') = '+fmt(p[0])+' − '+fmt(p[1]*m.q)+' = '+fmt(m.r)+'. Sisa selalu lebih kecil dari pembagi.',meta:{a:p[0],b:p[1],q:m.q,r:m.r}});}
+    else if(t===5){const p=take('small');const m=computeDivision(p[0],p[1]);
+      const s1=m.steps.find(s=>s.type==='bagi'),s2=m.steps.find(s=>s.type==='kali'),s3=m.steps.find(s=>s.type==='kurang');
+      const stmts=[
+        {txt:p[1]+' masuk ke '+s1.chunk+' sebanyak '+s1.q+' kali',ok:true,fix:''},
+        {txt:s2.q+' × '+p[1]+' = '+s2.prod,ok:true,fix:''},
+        {txt:s3.chunk+' − '+s3.prod+' = '+s3.diff,ok:true,fix:''}];
+      const w=Math.floor(Math.random()*3);const delta=1+Math.floor(Math.random()*2);
+      if(w===0)stmts[0]={txt:p[1]+' masuk ke '+s1.chunk+' sebanyak '+(s1.q+delta)+' kali',ok:false,fix:'yang benar '+s1.q+' kali'};
+      if(w===1)stmts[1]={txt:s2.q+' × '+p[1]+' = '+(s2.prod+delta),ok:false,fix:'yang benar '+s2.q+' × '+p[1]+' = '+s2.prod};
+      if(w===2)stmts[2]={txt:s3.chunk+' − '+s3.prod+' = '+(s3.diff+delta),ok:false,fix:'yang benar '+s3.diff};
+      stmts.push({txt:'Setelah mengurangkan, turunkan angka berikutnya',ok:true,fix:''});
+      qs.push({kind:'mc',text:'Pada pengerjaan '+fmt(p[0])+' ÷ '+p[1]+' dengan porogapit, langkah manakah yang SALAH?',
+        opts:stmts.map(s=>s.txt),ansIdx:w,
+        explain:'Langkah yang salah: “'+stmts[w].txt+'” — '+stmts[w].fix+'.',meta:{a:p[0],b:p[1],q:m.q,r:0,noStat:true}});}
+    else if(t===6){
+      const orders=[['BAGI → KALI → KURANG → TURUNKAN',true],['KALI → BAGI → KURANG → TURUNKAN',false],['BAGI → KURANG → KALI → TURUNKAN',false],['TURUNKAN → BAGI → KALI → KURANG',false]];
+      const sh=shuffle(orders);
+      qs.push({kind:'mc',text:'Manakah urutan langkah porogapit yang BENAR?',opts:sh.map(o=>o[0]),
+        ansIdx:sh.findIndex(o=>o[1]),explain:'Urutan yang benar: BAGI → KALI → KURANG → TURUNKAN, diulang sampai semua angka diproses.',meta:{noStat:true}});}
+    else{const st=take('story');const m=computeDivision(st.a,st.b);
+      qs.push({kind:'num',text:st.txt.replace('{A}',fmt(st.a)).replace('{B}',st.b)+' (jawab dalam '+st.unit+')',ansNum:m.q,
+        explain:fmt(st.a)+' ÷ '+st.b+' = '+fmt(m.q)+' '+st.unit+'. Periksa: '+st.b+' × '+fmt(m.q)+' = '+fmt(st.a)+'.',meta:{a:st.a,b:st.b,q:m.q,r:0}});}
+  }
+  return shuffle(qs);
+}
+function startKuis(n){
+  QZ={qs:makeQuiz(n),i:0,correct:0,locked:false,sel:-1,answers:[],start:Date.now(),count:n};
+  sfx.click();renderKuis();
+  if(qzTimerInt)clearInterval(qzTimerInt);
+  qzTimerInt=setInterval(()=>{
+    const el=$('qz-timer');
+    if(!el){clearInterval(qzTimerInt);qzTimerInt=null;return;}
+    const s=Math.floor((Date.now()-QZ.start)/1000);
+    el.textContent='⏱ '+String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+  },1000);
+}
+function renderKuis(){
+  const q=QZ.qs[QZ.i];const total=QZ.qs.length;
+  const pct=Math.round(QZ.i/total*100);
+  let body='';
+  if(q.kind==='mc'){
+    body=q.opts.map((o,k)=>'<button class="kbd-opt" id="opt'+k+'" onclick="qzSelect('+k+')">'+String.fromCharCode(65+k)+'. '+esc(String(o))+'</button>').join('');
+  }else{
+    body='<label class="lbl" for="qz-num">Jawabanmu (angka)</label><div style="display:flex;gap:8px">'+
+    '<input id="qz-num" class="input num" type="number" inputmode="numeric" style="max-width:180px" onkeydown="if(event.key===\'Enter\')qzLock()"></div>';
+  }
+  $('page').innerHTML='<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">'+
+  '<h2>🏆 Kuis Tantangan</h2><div style="display:flex;gap:8px">'+
+  '<span class="chip" style="color:#1d4ed8;background:#e8efff;border-color:#bfd3ff">Soal '+(QZ.i+1)+'/'+total+'</span>'+
+  '<span class="chip" style="color:#1d4ed8;background:#e8efff;border-color:#bfd3ff" id="qz-timer">⏱ --:--</span></div></div>'+
+  '<div class="pbar" style="margin:10px 0"><div class="gold" style="width:'+pct+'%"></div></div>'+
+  '<div class="card" style="background:#f8fafc;border:2px solid #dbe6ff;margin:10px 0"><p style="font-size:1.1rem;font-weight:700;line-height:1.7;margin-bottom:12px">'+esc(q.text)+'</p>'+body+
+  '<div id="qz-fb"></div><div class="btn-row"><button class="btn green" id="qz-lock" onclick="qzLock()">🔒 Kunci Jawaban</button><span id="qz-nextbtn"></span></div></div>'+
+  '<button class="btn ghost small" onclick="qzQuit()">✖ Akhiri Kuis</button></div>';
+  const ni=$('qz-num');if(ni)ni.focus();
+}
+function qzSelect(k){
+  if(QZ.locked)return;
+  QZ.sel=k;sfx.click();
+  QZ.qs[QZ.i].opts.forEach((o,i)=>{$('opt'+i).classList.toggle('sel',i===k);});
+}
+function qzLock(){
+  if(QZ.locked)return;
+  const q=QZ.qs[QZ.i];let given,correct;
+  if(q.kind==='mc'){
+    if(QZ.sel<0){toast('Pilih salah satu jawaban dulu ya!','err');return;}
+    given=QZ.sel;correct=(QZ.sel===q.ansIdx);
+    q.opts.forEach((o,i)=>{
+      const el=$('opt'+i);
+      if(i===q.ansIdx)el.classList.add('correct');
+      else if(i===QZ.sel)el.classList.add('wrong');
+    });
+  }else{
+    const v=$('qz-num').value;
+    if(v===''){toast('Isi jawabanmu dulu ya!','err');return;}
+    given=parseInt(v,10);
+    if(isNaN(given)){toast('Masukkan angka yang benar.','err');return;}
+    correct=(given===q.ansNum);
+  }
+  QZ.locked=true;
+  if(correct)QZ.correct++;
+  QZ.answers.push({q:q,given:given,correct:correct});
+  if(q.meta&&!q.meta.noStat)onAnswered(correct,q.meta.a,q.meta.b,String(q.meta.q).includes('0'),q.meta.r>0);
+  else onAnswered(correct);
+  const fb=$('qz-fb');
+  if(correct){sfx.correct();fb.innerHTML='<div class="fb ok bounce"><span class="fi">✅</span><span><b>Jawaban Benar!</b> '+esc(q.explain)+'</span></div>';}
+  else{sfx.wrong();fb.innerHTML='<div class="fb no"><span class="fi">📖</span><span><b>Belum tepat.</b> '+esc(q.explain)+'</span></div>';}
+  $('qz-lock').disabled=true;
+  $('qz-nextbtn').innerHTML='<button class="btn primary" onclick="qzNext()">'+(QZ.i+1>=QZ.qs.length?'🏁 Lihat Hasil':'Soal Berikutnya →')+'</button>';
+}
+function qzNext(){
+  QZ.i++;QZ.locked=false;QZ.sel=-1;sfx.click();
+  if(QZ.i>=QZ.qs.length)qzFinish();
+  else renderKuis();
+}
+function qzQuit(){
+  confirmDialog('Akhiri Kuis?','Jawaban yang sudah dikunci tetap dihitung. Kuis akan dinilai dari soal yang sudah dijawab.','Ya, Akhiri',()=>{qzFinish(true);});
+}
+function qzCategory(score){
+  if(score>=90)return ['Master Porogapit','🏆','Luar biasa! Kamu benar-benar menguasai porogapit!'];
+  if(score>=80)return ['Ahli Pembagian','🥇','Hebat sekali! Sedikit lagi menuju Master!'];
+  if(score>=70)return ['Petualang Hebat','🥈','Bagus! Terus asah kemampuanmu!'];
+  if(score>=60)return ['Terus Berlatih','🥉','Kamu sudah di jalur yang benar. Ayo berlatih lagi!'];
+  return ['Ayo Coba Lagi','🌱','Jangan menyerah! Pelajari materinya lagi, lalu coba kembali. Kamu pasti bisa!'];
+}
+function qzFinish(early){
+  if(qzTimerInt){clearInterval(qzTimerInt);qzTimerInt=null;}
+  const answered=QZ.answers.length;
+  const total=early?Math.max(answered,1):QZ.qs.length;
+  const score=Math.round(QZ.correct/total*100);
+  const cat=qzCategory(score);
+  const stars=score>=90?3:score>=75?2:score>=50?1:0;
+  addStars(stars);
+  if(score>S.progress.bestQuiz)S.progress.bestQuiz=score;
+  recordHistory({type:'kuis',total:total,correct:QZ.correct,wrong:total-QZ.correct,score:score});
+  save();checkBadges();
+  if(score>=75){sfx.win();confetti();}
+  const wrongs=QZ.answers.filter(a=>!a.correct);
+  let wl='';
+  if(wrongs.length){
+    wl='<h3 style="margin-top:16px">📖 Pembahasan soal yang salah:</h3>';
+    wrongs.forEach(w=>{
+      const benar=w.q.kind==='mc'?String.fromCharCode(65+w.q.ansIdx)+'. '+w.q.opts[w.q.ansIdx]:fmt(w.q.ansNum);
+      const given=w.q.kind==='mc'?String.fromCharCode(65+w.given):fmt(w.given);
+      wl+='<div class="fb no"><span class="fi">✏️</span><span><b>'+esc(w.q.text)+'</b><br>Jawabanmu: '+esc(String(given))+' → Kunci: <b>'+esc(String(benar))+'</b><br>'+esc(w.q.explain)+'</span></div>';
+    });
+  }else{
+    wl='<div class="fb ok"><span class="fi">🌟</span><span>Sempurna! Tidak ada jawaban yang salah.</span></div>';
+  }
+  $('page').innerHTML='<div class="card" style="text-align:center">'+
+  '<div style="font-size:3rem">'+cat[1]+'</div><h2>'+cat[0]+'</h2>'+
+  '<p style="font-size:2.4rem;font-weight:900;color:#1d4ed8;margin:6px 0">Nilai: '+score+'</p>'+
+  '<p style="font-size:1.5rem">'+('⭐'.repeat(stars)||'🌱')+'</p>'+
+  '<p style="color:#475a8f;font-weight:700">'+cat[2]+'</p>'+
+  '<div class="grid g3" style="margin:14px 0"><div class="stat-card"><div class="sv">'+total+'</div><div class="sl">Jumlah Soal</div></div>'+
+  '<div class="stat-card"><div class="sv" style="color:#16a34a">'+QZ.correct+'</div><div class="sl">Benar</div></div>'+
+  '<div class="stat-card"><div class="sv" style="color:#dc2626">'+(total-QZ.correct)+'</div><div class="sl">Salah</div></div></div>'+
+  '<div style="text-align:left">'+wl+'</div>'+
+  '<div class="btn-row" style="justify-content:center;margin-top:16px"><button class="btn primary" onclick="startKuis('+QZ.count+')">🔄 Ulangi Kuis</button>'+
+  '<button class="btn cyan" onclick="showPage(\'kuis\')">🎚️ Ganti Jumlah Soal</button>'+
+  '<button class="btn ghost" onclick="showPage(\'beranda\')">🏠 Kembali ke Beranda</button></div></div>';
+  window.scrollTo(0,0);
+}
+/* ================================================================
+   HALAMAN: MISI HARIAN
+   ================================================================ */
+function rMisi(){
+  ensureMissions();
+  const d=new Date();
+  let h='<div class="card"><div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;align-items:center">'+
+  '<h2>🗓️ Misi Harian</h2><span class="chip" style="color:#1d4ed8;background:#e8efff;border-color:#bfd3ff">📅 '+d.toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'})+'</span></div>'+
+  '<p style="color:#475a8f;margin-top:6px">Selesaikan misi, lalu klaim hadiah bintangmu! Misi diatur ulang otomatis setiap pergantian tanggal pada perangkat ini (mengubah tanggal perangkat dapat memengaruhi tampilan misi).</p><div style="margin-top:14px">';
+  MISSION_DEFS.forEach(def=>{
+    const m=S.missions.list.find(x=>x.id===def.id);
+    const done=m.progress>=def.target;
+    const pct=Math.round(m.progress/def.target*100);
+    h+='<div class="mission-row"><span class="mi">'+def.ico+'</span>'+
+    '<div style="flex:1;min-width:180px"><b>'+def.name+'</b>'+
+    '<div class="pbar" style="margin-top:6px;max-width:260px"><div style="width:'+pct+'%"></div></div>'+
+    '<small style="color:#5b6b9e;font-weight:700">'+m.progress+' / '+def.target+'</small></div>'+
+    '<span class="chip gold" style="color:#854d0e;background:#fefce8;border-color:#fde047">⭐ +'+def.reward+'</span>'+
+    (m.claimed?'<span class="chip" style="color:#166534;background:#dcfce7;border-color:#86efac">✔ Diklaim</span>'
+      :done?'<button class="btn yellow small" onclick="claimMission(\''+def.id+'\')">🎁 Klaim Hadiah</button>'
+      :'<span class="chip" style="color:#5b6b9e;background:#eef2fb;border-color:#dbe6ff">Belum selesai</span>');
+    h+='</div>';
+  });
+  return h+'</div></div>';
+}
+function claimMission(id){
+  ensureMissions();
+  const def=MISSION_DEFS.find(d=>d.id===id);
+  const m=S.missions.list.find(x=>x.id===id);
+  if(!m||m.claimed||m.progress<def.target)return;
+  m.claimed=true;
+  addStars(def.reward);addPoints(def.reward*5);
+  S.progress.missionsClaimed++;
+  save();checkBadges();confetti();sfx.win();
+  toast('🎁 Hadiah diklaim: +'+def.reward+' ⭐ dan +'+(def.reward*5)+' poin!','ok');
+  showPage('misi');
+}
+
+/* ================================================================
+   HALAMAN: PRESTASI SAYA
+   ================================================================ */
+function rPrestasi(){
+  const li=levelInfo();
+  let h='<div class="card"><h2>⭐ Prestasi Saya</h2>'+
+  '<div class="grid g4" style="margin-top:12px">'+
+  '<div class="stat-card"><div class="sv">'+fmt(S.progress.points)+'</div><div class="sl">Total Poin</div></div>'+
+  '<div class="stat-card"><div class="sv">⭐ '+fmt(S.progress.stars)+'</div><div class="sl">Total Bintang</div></div>'+
+  '<div class="stat-card"><div class="sv">Lv '+li.lv+'</div><div class="sl">'+li.name+'</div></div>'+
+  '<div class="stat-card"><div class="sv">'+S.progress.correctTotal+'</div><div class="sl">Jawaban Benar</div></div></div>'+
+  (li.next!==null?'<p style="margin-top:10px;color:#475a8f;font-weight:700">Menuju level berikutnya: '+fmt(S.progress.points)+' / '+fmt(li.next)+' poin</p><div class="pbar"><div class="gold" style="width:'+Math.min(100,Math.round(S.progress.points/li.next*100))+'%"></div></div>':'<p style="margin-top:10px;font-weight:800;color:#854d0e">🏆 Level tertinggi tercapai!</p>')+
+  '</div><div class="card"><h2>🏅 Lencana</h2><div class="grid g2" style="margin-top:10px">';
+  BADGES.forEach(b=>{
+    const got=S.badges.includes(b.id);
+    h+='<div class="badgeitem'+(got?' got':'')+'"><span class="bic">'+b.ico+'</span><div><b>'+b.name+'</b>'+(got?' <span style="color:#16a34a;font-weight:800">✔ Diperoleh</span>':' <span style="color:#94a3b8;font-weight:700">(terkunci)</span>')+
+    '<div style="font-size:.82rem;color:#5b6b9e">'+b.desc+'</div></div></div>';
+  });
+  h+='</div></div><div class="card"><h2>📜 Riwayat Aktivitas</h2>';
+  if(!S.history.length){h+='<p style="color:#5b6b9e;margin-top:8px">Belum ada aktivitas. Ayo mulai dari Materi atau Simulasi!</p>';}
+  else{
+    h+='<div class="tbl-wrap" style="margin-top:10px"><table class="tbl"><thead><tr><th>Tanggal</th><th>Aktivitas</th><th>Benar</th><th>Salah</th><th>Nilai</th></tr></thead><tbody>';
+    S.history.slice(0,15).forEach(e=>{
+      h+='<tr><td>'+dateID(e.date)+'</td><td>'+histLabel(e)+'</td><td style="color:#16a34a;font-weight:800">'+(e.correct!=null?e.correct:'—')+'</td><td style="color:#dc2626;font-weight:800">'+(e.wrong!=null?e.wrong:'—')+'</td><td><b>'+(e.score!=null?e.score:'—')+'</b></td></tr>';
+    });
+    h+='</tbody></table></div><p style="font-size:.78rem;color:#94a3b8;margin-top:8px">Data tersimpan hanya di browser dan perangkat ini (localStorage), tidak tersinkron otomatis ke perangkat lain.</p>';
+  }
+  return h+'</div>';
+}
+function histLabel(e){
+  if(e.type==='kuis')return '🏆 Kuis ('+e.total+' soal)';
+  if(e.type==='latihan')return '🎯 Latihan Level '+e.level;
+  if(e.type==='simulasi')return '🖥️ Simulasi '+(e.soal||'')+' ('+(e.mode==='guided'?'terbimbing':'mandiri')+')';
+  return e.type;
+}
+
+/* ================================================================
+   HALAMAN: PANDUAN PENGGUNAAN
+   ================================================================ */
+function rPanduan(){
+  return '<div class="card"><h2>📖 Panduan Penggunaan</h2></div><div class="grid g3">'+
+  '<div class="card" style="margin:0;border-top:6px solid #22c55e"><h3>🧒 Untuk Siswa</h3><ol style="padding-left:18px;line-height:2">'+
+  '<li>Mulai dari <b>Materi Pembelajaran</b> (urut 1–9).</li><li>Ikuti <b>Simulasi</b>: Demonstrasi → Terbimbing → Mandiri.</li>'+
+  '<li>Kerjakan <b>Latihan Bertahap</b> dari Level 1.</li><li>Uji dirimu di <b>Kuis Tantangan</b>.</li>'+
+  '<li>Selesaikan <b>Misi Harian</b> dan lihat <b>Prestasi</b>mu.</li></ol></div>'+
+  '<div class="card" style="margin:0;border-top:6px solid #2563eb"><h3>🧑‍🏫 Untuk Guru</h3><ol style="padding-left:18px;line-height:2">'+
+  '<li>Buka <b>Menu Guru</b>.</li><li>Masuk menggunakan password guru.</li>'+
+  '<li>Periksa ringkasan, riwayat latihan, dan kuis siswa.</li><li>Gunakan <b>Cetak Laporan</b> atau <b>Ekspor CSV</b>.</li>'+
+  '<li>Tekan <b>Keluar</b> untuk mengunci kembali dashboard.</li></ol></div>'+
+  '<div class="card" style="margin:0;border-top:6px solid #7c3aed"><h3>⚙️ Untuk Pengelola</h3><ol style="padding-left:18px;line-height:2">'+
+  '<li>Simpan file ini sebagai <b>index.html</b>, lalu buka dengan browser modern (dapat offline).</li>'+
+  '<li>Buat salinan cadangan file secara berkala.</li>'+
+  '<li>Progres tersimpan di <b>localStorage</b> browser — hanya pada perangkat &amp; browser yang sama.</li>'+
+  '<li>Password guru ditulis di kode sisi klien, sehingga <b>bukan sistem keamanan untuk data sensitif</b> — hanya pembatas sederhana. Untuk keamanan kuat, gunakan server.</li></ol></div></div>';
+}
+
+/* ================================================================
+   HALAMAN: MENU GURU
+   ================================================================ */
+let guruUnlocked=false;
+let gF={jenis:'all',level:'all',range:'all',nilai:'all'};
+function rGuru(){
+  if(!guruUnlocked){
+    return '<div class="card" style="text-align:center;max-width:520px;margin:30px auto">'+
+    '<div style="font-size:3rem">🔒</div><h2>Menu Guru Terkunci</h2>'+
+    '<p style="color:#475a8f;margin:10px 0">Dashboard guru berisi hasil latihan dan kuis siswa pada perangkat ini. Masuk dengan password guru untuk membukanya.</p>'+
+    '<button class="btn primary" onclick="openGuruLogin()">🔑 Buka Login Guru</button>'+
+    '<p style="font-size:.76rem;color:#94a3b8;margin-top:14px">Catatan: login ini adalah pembatas sederhana untuk pembelajaran, bukan sistem autentikasi untuk data sensitif.</p></div>';
+  }
+  return guruDashHTML();
+}
+function openGuruLogin(){
+  openModal('<h3 style="display:flex;align-items:center;gap:8px">🔑 Login Guru</h3>'+
+  '<label class="lbl" for="g-pw" style="margin-top:12px">Masukkan password</label>'+
+  '<div style="display:flex;gap:8px"><input id="g-pw" class="input" type="password" autocomplete="off" onkeydown="if(event.key===\'Enter\')guruLogin()">'+
+  '<button class="btn ghost" type="button" id="g-eye" onclick="togglePw()" aria-label="Tampilkan password">👁</button></div>'+
+  '<div id="g-err"></div>'+
+  '<div class="btn-row"><button class="btn primary" onclick="guruLogin()">Masuk</button>'+
+  '<button class="btn ghost" onclick="closeModal()">Batal</button></div>');
+  setTimeout(()=>{const e=$('g-pw');if(e)e.focus();},50);
+}
+function togglePw(){
+  const i=$('g-pw');
+  i.type=(i.type==='password')?'text':'password';
+  $('g-eye').textContent=(i.type==='password')?'👁':'🙈';
+}
+function guruLogin(){
+  const v=$('g-pw').value;
+  if(v==='Inovatif'){ /* peka huruf besar-kecil; tidak disimpan di localStorage */
+    guruUnlocked=true;closeModal();sfx.correct();
+    toast('Selamat datang, Bapak/Ibu Guru! 👋','ok');
+    showPage('guru');
+  }else{
+    sfx.wrong();
+    $('g-err').innerHTML='<div class="fb no" style="margin-top:10px"><span class="fi">⚠️</span><span>Password belum tepat. Silakan coba kembali.</span></div>';
+    $('g-pw').select();
+  }
+}
+function guruLogout(){
+  guruUnlocked=false;
+  toast('Dashboard guru dikunci kembali. Progres siswa tetap tersimpan.','ok');
+  showPage('guru');
+}
+function filteredHistory(){
+  const now=Date.now();
+  return S.history.filter(e=>{
+    if(gF.jenis!=='all'&&e.type!==gF.jenis)return false;
+    if(gF.level!=='all'&&String(e.level||'')!==gF.level)return false;
+    if(gF.range!=='all'){
+      const days=parseInt(gF.range,10);
+      if(now-new Date(e.date).getTime()>days*86400000)return false;
+    }
+    if(gF.nilai!=='all'){
+      if(e.score==null)return false;
+      const s=e.score;
+      if(gF.nilai==='90'&&s<90)return false;
+      if(gF.nilai==='80'&&(s<80||s>89))return false;
+      if(gF.nilai==='70'&&(s<70||s>79))return false;
+      if(gF.nilai==='60'&&(s<60||s>69))return false;
+      if(gF.nilai==='0'&&s>=60)return false;
+    }
+    return true;
+  });
+}
+function guruDashHTML(){
+  const H=filteredHistory();
+  const latihan=S.history.filter(e=>e.type==='latihan');
+  const kuis=S.history.filter(e=>e.type==='kuis');
+  const avgKuis=kuis.length?Math.round(kuis.reduce((a,e)=>a+e.score,0)/kuis.length):0;
+  const maxScore=S.history.reduce((a,e)=>Math.max(a,e.score||0),0);
+  const totalSoal=S.history.reduce((a,e)=>a+(e.total||0),0);
+  const wrongs=Object.entries(S.wrongLog).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  let h='<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">'+
+  '<h2>🧑‍🏫 Dashboard Guru</h2><button class="btn danger small" onclick="guruLogout()">🔒 Keluar &amp; Kunci</button></div>'+
+  '<div class="grid g4" style="margin-top:14px">'+
+  '<div class="stat-card"><div class="sv">'+latihan.length+'</div><div class="sl">Sesi Latihan</div></div>'+
+  '<div class="stat-card"><div class="sv">'+avgKuis+'</div><div class="sl">Rata-rata Nilai Kuis ('+kuis.length+' kuis)</div></div>'+
+  '<div class="stat-card"><div class="sv">'+maxScore+'</div><div class="sl">Nilai Tertinggi</div></div>'+
+  '<div class="stat-card"><div class="sv">'+fmt(totalSoal)+'</div><div class="sl">Soal Dikerjakan</div></div></div>'+
+  '<div class="grid g3" style="margin-top:10px">'+
+  '<div class="stat-card"><div class="sv">'+S.progress.levelsDone.length+'/6</div><div class="sl">Level Latihan Selesai'+(S.progress.levelsDone.length?' ('+S.progress.levelsDone.slice().sort().join(', ')+')':'')+'</div></div>'+
+  '<div class="stat-card"><div class="sv">'+S.progress.materialsRead.length+'/9</div><div class="sl">Materi Dipelajari</div></div>'+
+  '<div class="stat-card"><div class="sv">'+S.badges.length+'/'+BADGES.length+'</div><div class="sl">Lencana Diperoleh</div></div></div></div>';
+  if(wrongs.length){
+    h+='<div class="card"><h3>❗ Soal yang Sering Dijawab Salah</h3><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">';
+    wrongs.forEach(w=>{h+='<span class="chip" style="color:#7f1d1d;background:#fee2e2;border-color:#fca5a5">'+esc(w[0])+' — '+w[1]+'×</span>';});
+    h+='</div></div>';
+  }
+  h+='<div class="card"><h3>📋 Riwayat Aktivitas</h3>'+
+  '<div style="display:flex;gap:10px;flex-wrap:wrap;margin:10px 0">'+
+  selG('jenis','Jenis Aktivitas',[['all','Semua'],['latihan','Latihan'],['kuis','Kuis'],['simulasi','Simulasi']])+
+  selG('level','Level',[['all','Semua'],['1','Level 1'],['2','Level 2'],['3','Level 3'],['4','Level 4'],['5','Level 5'],['6','Level 6']])+
+  selG('range','Rentang Tanggal',[['all','Semua waktu'],['7','7 hari terakhir'],['30','30 hari terakhir']])+
+  selG('nilai','Kategori Nilai',[['all','Semua'],['90','90–100'],['80','80–89'],['70','70–79'],['60','60–69'],['0','&lt; 60']])+
+  '</div>';
+  if(!H.length){h+='<p style="color:#5b6b9e">Tidak ada data untuk filter ini.</p>';}
+  else{
+    h+='<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Tanggal</th><th>Jenis</th><th>Keterangan</th><th>Soal</th><th>Benar</th><th>Salah</th><th>Nilai</th><th></th></tr></thead><tbody>';
+    H.forEach(e=>{
+      h+='<tr><td>'+dateID(e.date)+'</td><td>'+e.type+'</td><td>'+histLabel(e)+'</td><td>'+(e.total!=null?e.total:'—')+'</td>'+
+      '<td style="color:#16a34a;font-weight:800">'+(e.correct!=null?e.correct:'—')+'</td><td style="color:#dc2626;font-weight:800">'+(e.wrong!=null?e.wrong:'—')+'</td>'+
+      '<td><b>'+(e.score!=null?e.score:'—')+'</b></td>'+
+      '<td><button class="btn ghost small" onclick="guruDetail(\''+e.id+'\')">Lihat Detail</button></td></tr>';
+    });
+    h+='</tbody></table></div>';
+  }
+  h+='<div class="btn-row"><button class="btn primary small" onclick="guruPrint()">🖨 Cetak Laporan</button>'+
+  '<button class="btn cyan small" onclick="guruCSV()">📥 Ekspor CSV</button>'+
+  '<button class="btn danger small" onclick="guruDelete()">🗑 Hapus Riwayat</button></div>'+
+  '<p style="font-size:.76rem;color:#94a3b8;margin-top:10px">Data berasal dari perangkat ini saja. Password guru diperiksa di sisi klien dan merupakan pembatas sederhana, bukan sistem keamanan untuk data sensitif.</p></div>';
+  return h;
+}
+function selG(key,label,opts){
+  let h='<div><label class="lbl">'+label+'</label><select class="input" style="padding:9px 12px;width:auto" onchange="gF.'+key+'=this.value;showPage(\'guru\')">';
+  opts.forEach(o=>{h+='<option value="'+o[0]+'"'+(gF[key]===o[0]?' selected':'')+'>'+o[1]+'</option>';});
+  return h+'</select></div>';
+}
+function guruDetail(id){
+  const e=S.history.find(x=>String(x.id)===String(id));
+  if(!e)return;
+  const nilai=e.score!=null?e.score+' ('+qzCategory(e.score)[0]+')':'—';
+  openModal('<h3>Detail Aktivitas</h3><table class="tbl" style="margin-top:10px">'+
+  '<tr><td><b>Tanggal</b></td><td>'+dateID(e.date)+'</td></tr>'+
+  '<tr><td><b>Jenis</b></td><td>'+histLabel(e)+'</td></tr>'+
+  '<tr><td><b>Jumlah Soal</b></td><td>'+(e.total!=null?e.total:'—')+'</td></tr>'+
+  '<tr><td><b>Benar</b></td><td>'+(e.correct!=null?e.correct:'—')+'</td></tr>'+
+  '<tr><td><b>Salah</b></td><td>'+(e.wrong!=null?e.wrong:'—')+'</td></tr>'+
+  '<tr><td><b>Nilai</b></td><td>'+nilai+'</td></tr></table>'+
+  '<div class="btn-row"><button class="btn primary" onclick="closeModal()">Tutup</button></div>');
+}
+function guruCSV(){
+  const H=filteredHistory();
+  const rows=[['Tanggal','Jenis','Level','Jumlah Soal','Benar','Salah','Nilai']];
+  H.forEach(e=>{rows.push([dateID(e.date),e.type,e.level||'-',e.total!=null?e.total:'-',e.correct!=null?e.correct:'-',e.wrong!=null?e.wrong:'-',e.score!=null?e.score:'-']);});
+  const escv=v=>'"'+String(v).replace(/"/g,'""')+'"';
+  const txt='\ufeff'+rows.map(r=>r.map(escv).join(';')).join('\r\n');
+  try{
+    const blob=new Blob([txt],{type:'text/csv;charset=utf-8'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download='laporan-porogapit-'+todayStr()+'.csv';
+    document.body.appendChild(a);a.click();a.remove();
+    toast('File CSV berhasil diunduh ('+H.length+' baris data).','ok');
+  }catch(e){toast('Gagal membuat file CSV di browser ini.','err');}
+}
+function guruPrint(){
+  const H=filteredHistory();
+  const kuis=S.history.filter(e=>e.type==='kuis');
+  const avg=kuis.length?Math.round(kuis.reduce((a,e)=>a+e.score,0)/kuis.length):0;
+  let rows='';
+  H.forEach(e=>{rows+='<tr><td>'+dateID(e.date)+'</td><td>'+e.type+'</td><td>'+(e.level||'-')+'</td><td>'+(e.total!=null?e.total:'-')+'</td><td>'+(e.correct!=null?e.correct:'-')+'</td><td>'+(e.wrong!=null?e.wrong:'-')+'</td><td>'+(e.score!=null?e.score:'-')+'</td></tr>';});
+  const pa=$('print-area');
+  pa.innerHTML='<h2>Laporan Belajar — POROGAPIT ADVENTURE</h2>'+
+  '<p>Dicetak: '+dateID(new Date().toISOString())+' · Rata-rata nilai kuis: <b>'+avg+'</b> · Total aktivitas: <b>'+H.length+'</b></p>'+
+  '<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;width:100%;font-size:12px">'+
+  '<tr><th>Tanggal</th><th>Jenis</th><th>Level</th><th>Jumlah Soal</th><th>Benar</th><th>Salah</th><th>Nilai</th></tr>'+rows+'</table>'+
+  '<p style="margin-top:14px">Created by Wiyanto Abu Hanif</p>';
+  pa.style.display='block';
+  setTimeout(()=>{window.print();setTimeout(()=>{pa.style.display='none';},400);},100);
+}
+function guruDelete(){
+  confirmDialog('Hapus Riwayat?','Seluruh riwayat latihan, kuis, dan simulasi akan dihapus. Pengaturan, lencana, poin, dan progres materi siswa <b>tidak</b> ikut terhapus. Lanjutkan?','Ya, Hapus Riwayat',()=>{
+    S.history=[];S.wrongLog={};save();
+    toast('Riwayat berhasil dihapus.','ok');
+    showPage('guru');
+  });
+}
+
+/* ================================================================
+   HALAMAN: PENGATURAN
+   ================================================================ */
+function rPengaturan(){
+  const t=runSelfTests();
+  function row(ico,label,desc,key){
+    return '<div class="setrow"><div><b>'+ico+' '+label+'</b><div style="font-size:.8rem;color:#5b6b9e">'+desc+'</div></div>'+
+    '<label class="switch"><input type="checkbox" '+(S.settings[key]?'checked':'')+' onchange="setSet(\''+key+'\',this.checked)"><span class="slider"></span></label></div>';
+  }
+  return '<div class="card"><h2>⚙️ Pengaturan Aplikasi</h2><div style="margin-top:8px">'+
+  row('🔊','Suara','Efek suara untuk jawaban benar, salah, dan penghargaan','sound')+
+  row('🎬','Animasi','Animasi ringan pada kartu dan angka','anim')+
+  row('✨','Efek Visual','Bintang latar dan konfeti perayaan','fx')+
+  row('🔠','Ukuran Teks Besar','Perbesar teks dan angka porogapit','bigText')+
+  row('🛡️','Konfirmasi Sebelum Menghapus','Selalu tampilkan dialog konfirmasi sebelum progres dihapus','confirmDelete')+
+  '</div></div>'+
+  '<div class="card"><h3>🧪 Uji Matematika Internal</h3>'+
+  '<p style="color:#475a8f;margin:8px 0">Aplikasi menguji mesin porogapit terhadap 10 kasus wajib (84÷4, 408÷4, 1.248÷12, 3.456÷16, dll.) serta penolakan input tidak valid.</p>'+
+  (t.length===0?'<div class="fb ok"><span class="fi">✅</span><span>Semua '+13+' kasus pengujian LULUS. Mesin perhitungan bekerja dengan benar.</span></div>'
+    :'<div class="fb no"><span class="fi">❌</span><span>Kasus gagal: '+esc(t.join(' | '))+'</span></div>')+
+  '</div>'+
+  '<div class="card" style="border:2px solid #fca5a5"><h3 style="color:#b91c1c">🗑 Reset Progres</h3>'+
+  '<p style="color:#475a8f;margin:8px 0">Menghapus seluruh progres, poin, bintang, lencana, misi, dan riwayat pada perangkat ini. Pengaturan tetap disimpan.</p>'+
+  '<button class="btn danger" onclick="resetProgress()">Reset Semua Progres</button></div>';
+}
+function setSet(key,val){
+  S.settings[key]=val;save();applySettings();
+  sfx.click();
+  if(key==='bigText')showPage(currentPage);
+}
+function applySettings(){
+  document.body.classList.toggle('no-anim',!S.settings.anim);
+  document.body.classList.toggle('no-fx',!S.settings.fx);
+  document.body.classList.toggle('big-text',S.settings.bigText);
+}
+function resetProgress(){
+  const doReset=()=>{
+    const keep=S.settings;
+    S=defaultState();S.settings=keep;
+    save();ensureMissions();
+    toast('Semua progres telah direset. Selamat memulai petualangan baru!','ok');
+    showPage('beranda');
+  };
+  if(S.settings.confirmDelete){
+    confirmDialog('Reset Semua Progres?','Poin, bintang, lencana, riwayat, dan progres materi akan dihapus permanen dari perangkat ini. Yakin?','Ya, Reset Semua',doReset);
+  }else doReset();
+}
+
+/* ================================================================
+   PENGUJIAN MATEMATIKA OTOMATIS
+   ================================================================ */
+function runSelfTests(){
+  const cases=[[84,4,21,0],[96,3,32,0],[408,4,102,0],[609,3,203,0],[1248,6,208,0],
+    [157,6,26,1],[245,4,61,1],[389,7,55,4],[1248,12,104,0],[3456,16,216,0]];
+  const fails=[];
+  cases.forEach(c=>{
+    const m=computeDivision(c[0],c[1]);
+    if(m.error||m.q!==c[2]||m.r!==c[3]||parseInt(m.quotientStr,10)!==c[2]||m.r>=c[1])
+      fails.push(c[0]+'÷'+c[1]);
+  });
+  if(!computeDivision(10,0).error)fails.push('pembagi-0');
+  if(!computeDivision(-5,2).error)fails.push('negatif');
+  if(!computeDivision(5.5,2).error)fails.push('desimal');
+  return fails;
+}
+
+/* ================================================================
+   NAVIGASI & INISIALISASI
+   ================================================================ */
+const NAV=[
+ ['beranda','🏠','Beranda',rHome],
+ ['materi','📘','Materi Pembelajaran',rMateri],
+ ['simulasi','🖥️','Simulasi Porogapit',rSimulasi],
+ ['latihan','🎯','Latihan Bertahap',rLatihan],
+ ['kuis','🏆','Kuis Tantangan',rKuis],
+ ['misi','🗓️','Misi Harian',rMisi],
+ ['prestasi','⭐','Prestasi Saya',rPrestasi],
+ ['panduan','📖','Panduan Penggunaan',rPanduan],
+ ['guru','🧑‍🏫','Menu Guru',rGuru],
+ ['pengaturan','⚙️','Pengaturan',rPengaturan]
+];
+let currentPage='beranda';
+function buildNav(){
+  const ul=$('navlist');
+  ul.innerHTML=NAV.map(n=>'<li><button class="nav-btn" id="nav-'+n[0]+'" onclick="showPage(\''+n[0]+'\')"><span class="ico">'+n[1]+'</span>'+n[2]+'</button></li>').join('');
+}
+function showPage(key){
+  const n=NAV.find(x=>x[0]===key);
+  if(!n)return;
+  currentPage=key;
+  NAV.forEach(x=>{const b=$('nav-'+x[0]);if(b)b.classList.toggle('active',x[0]===key);});
+  $('pagetitle').innerHTML=n[1]+' '+n[2];
+  $('page').innerHTML=n[3]();
+  toggleSidebar(false);
+  updateChips();
+  window.scrollTo(0,0);
+}
+function toggleSidebar(force){
+  const sb=$('sidebar'),ov=$('sidebar-overlay');
+  const open=(force===undefined)?!sb.classList.contains('open'):force;
+  sb.classList.toggle('open',open);
+  ov.classList.toggle('show',open);
+}
+function updateChips(){
+  const li=levelInfo();
+  $('chip-stars').textContent='⭐ '+fmt(S.progress.stars);
+  $('chip-level').textContent='🤖 Lv '+li.lv+' · '+li.name;
+}
+function initStars(){
+  const bg=$('starsbg');let h='';
+  for(let i=0;i<45;i++){
+    h+='<span style="left:'+(Math.random()*100)+'%;top:'+(Math.random()*100)+'%;animation-delay:'+(Math.random()*3)+'s;width:'+(2+Math.random()*2)+'px;height:'+(2+Math.random()*2)+'px"></span>';
+  }
+  bg.innerHTML=h;
+}
+/* --- Mulai aplikasi --- */
+(function init(){
+  if(!storageOk())toast('localStorage tidak tersedia. Progres hanya tersimpan selama halaman terbuka.','err');
+  initStars();
+  applySettings();
+  ensureMissions();
+  buildNav();
+  const fails=runSelfTests();
+  if(fails.length)console.error('UJI MATEMATIKA GAGAL:',fails);
+  else console.log('✓ Semua kasus uji matematika porogapit LULUS.');
+  showPage('beranda');
+  save();
+})();
+</script>
+</body>
+</html>
